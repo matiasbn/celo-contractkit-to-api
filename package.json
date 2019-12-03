@@ -8,10 +8,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start:dev": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
-    "start:debug:app": "DEBUG='app' nodemon --watch .env --watch src --exec babel-node src --source-maps",
-    "start:debug:wallet": "DEBUG='wallet' nodemon --watch .env --watch src --exec babel-node src --source-maps",
-    "start:debug:storage": "DEBUG='storage' nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "test": "jest",
+    "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "debug:mongo": "DEBUG='demo::mongo' nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "debug:express": "DEBUG='demo::express' nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "debug:app:start": "DEBUG='demo::app::start' nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "debug:app:routes": "DEBUG='demo::app::routes' nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "debug:app:controllers": "DEBUG='demo::app::controllers' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "lint": "eslint src/**/*.js --fix && echo Lint passed ❤",
     "clean": "rimraf dist && mkdir dist",
     "prebuild": "npm run clean && cp package.json yarn.lock dist",
@@ -31,13 +35,15 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-api-responder": "^1.1.1",
+    "express-validator": "^6.3.0",
     "helmet": "^3.21.2",
     "method-override": "^3.0.0",
     "mongoose": "^5.7.13",
     "morgan": "^1.9.1",
     "ms": "^2.1.2",
     "pino": "^5.13.6",
-    "pino-pretty": "^3.4.0"
+    "pino-pretty": "^3.4.0",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -50,13 +56,14 @@
     "babel-eslint": "^10.0.3",
     "babel-plugin-add-module-exports": "^1.0.2",
     "babel-preset-minify": "^0.5.1",
-    "cross-env": "^5.2.1",
+    "cross-env": "^6.0.3",
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-unicorn": "^10.0.0",
     "husky": "^3.0.5",
+    "jest": "^24.9.0",
     "lint-staged": "^9.2.5",
     "nodemon": "^1.19.2"
   },
@@ -69,6 +76,12 @@
   "lint-staged": {
     "*.js": [
       "npm run lint"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
     ]
   }
 }

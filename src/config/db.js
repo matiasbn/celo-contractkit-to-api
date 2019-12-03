@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import bluebird from 'bluebird'
 import ms from 'ms'
 import http from 'http'
-import { debugApp } from './debug'
+import { debugMongo, debugExpress } from './debug'
 
 const expressPort = process.env.APP_PORT || 3000
 const mongoDatabaseUri = process.env.MONGO_URI
@@ -22,8 +22,8 @@ mongoose.set('useCreateIndex', true)
 const initDB = (app) => {
   mongoose
     .connect(mongoDatabaseUri, options)
-    .then(() => debugApp('Mongodb connected'))
-    .catch((error) => debugApp(`Failed to connect to mongodb ${error.toString()}`))
+    .then(() => debugMongo('Mongodb connected'))
+    .catch((error) => debugMongo(`Failed to connect to mongodb ${error.toString()}`))
 
   mongoose
     .connection
@@ -35,9 +35,9 @@ const initDB = (app) => {
       //   request.io = IO
       //   next()
       // })
-      debugApp('Starting Express Server...')
+      debugMongo('Starting Express Server...')
 
-      server.listen(expressPort, () => debugApp(`Server running on port: ${expressPort}`))
+      server.listen(expressPort, () => debugExpress(`Server running on port: ${expressPort}`))
     })
 }
 

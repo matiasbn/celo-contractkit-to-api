@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import expressApiResponder from 'express-api-responder'
+import WalletRoutes from './wallet'
 
 const router = new Router()
 
@@ -16,8 +17,8 @@ router.get('/', (request, response) => {
   return response.success({ data: parsedResponse })
 })
 
-// router
-//   .use('/auth', AuthRoutes)
+router
+  .use('/wallet', WalletRoutes)
 //   .use('/companies', CompanyRoutes)
 //   .use('/energyFees', EnergyFeeRoutes)
 //   .use('/meters', MeterRoutes)
