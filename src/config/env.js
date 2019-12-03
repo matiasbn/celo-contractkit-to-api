@@ -7,7 +7,8 @@ dotenv.config({
 })
 
 const environmentVarsSchema = Joi.object({
-//   HELLO_WORLD: Joi.string(),
+  NODE_ENV: Joi.string().required().valid('production', 'development').default('development'),
+  MONGO_URI: Joi.string().required(),
 })
   .unknown()
   .required()

@@ -9,6 +9,7 @@
   "private": true,
   "scripts": {
     "start:dev": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "start:debug:mongoose": "DEBUG='mongoose'nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "lint": "eslint src/**/*.js --fix && echo Lint passed ❤",
     "clean": "rimraf dist && mkdir dist",
     "prebuild": "npm run clean && cp package.json yarn.lock dist",
