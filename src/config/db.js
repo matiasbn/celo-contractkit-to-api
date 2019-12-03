@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 import bluebird from 'bluebird'
 import ms from 'ms'
 import { debugMongoose } from './debug'
-import Logger from './logger'
 
 const options = {
   promiseLibrary: bluebird,
@@ -18,7 +17,7 @@ mongoose.set('useCreateIndex', true)
 const initDB = () => {
   mongoose
     .connect(mongoDatabaseUri, options)
-    .then(() => Logger.info('Mongodb connected'))
+    .then(() => debugMongoose('Mongodb connected'))
     .catch((error) => debugMongoose(`Failed to connect to mongodb ${error.toString()}`))
 }
 

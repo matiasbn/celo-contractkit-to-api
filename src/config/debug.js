@@ -5,9 +5,11 @@ import debug from 'debug'
 const debugMongoose = debug('mongoose')
 const debugWallet = debug('wallet')
 const debugTransacion = debug('transaction')
+const debugStorage = debug('storage')
 
 export {
   debugMongoose,
   debugWallet,
   debugTransacion,
+  debugStorage,
 }
