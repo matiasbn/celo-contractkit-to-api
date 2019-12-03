@@ -2,14 +2,15 @@
 import './config/env'
 import { newKit } from '@celo/contractkit'
 import initDB from './config/db'
-import { debugWallet, debugStorage } from './config/debug'
+import { debugWallet, debugStorage, debugApp } from './config/debug'
 import PrivateKey from './models/private-key'
 import Logger from './config/logger'
+import app from './config/express'
 
 const keySize = Number(process.env.KEY_SIZE)
 
 // Start database connection
-initDB()
+initDB(app)
 
 // Create kit
 const kit = newKit('https://alfajores-forno.celo-testnet.org/')

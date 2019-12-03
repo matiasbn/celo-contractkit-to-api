@@ -1,19 +1,17 @@
 import express from 'express'
 import consola from 'consola'
-
-import { errorHandlerMiddleware, notFoundMiddleware } from '@feathersjs/errors'
+import errorHandlerMiddleware from '@feathersjs/errors/handler'
+import notFoundMiddleware from '@feathersjs/errors/not-found'
 import bodyParser from 'body-parser'
 import compression from 'compression'
 // import cors from 'cors'
 import helmet from 'helmet'
 import methodOverride from 'method-override'
 import morgan from 'morgan'
-
 import routes from '../routes'
 
 
 const app = express()
-
 app.set('trust proxy', true)
 
 // Parse body params and attache them to req.body

@@ -1,7 +1,12 @@
 import mongoose from 'mongoose'
 import bluebird from 'bluebird'
 import ms from 'ms'
+import http from 'http'
 import { debugApp } from './debug'
+
+const expressPort = process.env.APP_PORT || 3000
+const mongoDatabaseUri = process.env.MONGO_URI
+
 
 const options = {
   promiseLibrary: bluebird,
@@ -11,31 +16,29 @@ const options = {
   useUnifiedTopology: true,
   useFindAndModify: false,
 }
-const mongoDatabaseUri = process.env.MONGO_URI
+
 mongoose.set('useCreateIndex', true)
 
-const initDB = () => {
+const initDB = (app) => {
   mongoose
     .connect(mongoDatabaseUri, options)
     .then(() => debugApp('Mongodb connected'))
     .catch((error) => debugApp(`Failed to connect to mongodb ${error.toString()}`))
 
-  // mongoose
-  //   .connection
-  //   .once('open', () => {
-  //     const server = http.createServer(app)
-  //     const IO = SocketIO(server)
+  mongoose
+    .connection
+    .once('open', () => {
+      const server = http.createServer(app)
+      // const IO = SocketIO(server)
 
-  //     app.use((request, response, next) => {
-  //       request.io = IO
-  //       next()
-  //     })
+      // app.use((request, response, next) => {
+      //   request.io = IO
+      //   next()
+      // })
+      debugApp('Starting Express Server...')
 
-  //     logger.info('Starting Express Server...')
-  //     debugApp('Starting Express Server...')
-
-  //     server.listen(apiPort, () => logger.info('Server running'))
-  //   })
+      server.listen(expressPort, () => debugApp(`Server running on port: ${expressPort}`))
+    })
 }
 
 export default initDB

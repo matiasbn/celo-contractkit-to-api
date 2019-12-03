@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "start:dev": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
-    "start:debug:mongoose": "DEBUG='mongoose' nodemon --watch .env --watch src --exec babel-node src --source-maps",
+    "start:debug:app": "DEBUG='app' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "start:debug:wallet": "DEBUG='wallet' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "start:debug:storage": "DEBUG='storage' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "lint": "eslint src/**/*.js --fix && echo Lint passed ❤",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@babel/runtime": "^7.4.5",
     "@celo/contractkit": "^0.2.4",
-    "@feathersjs/errors": "^4.4.1",
+    "@feathersjs/errors": "3.3.6",
     "@hapi/joi": "^16.1.7",
     "app-root-path": "^3.0.0",
     "bluebird": "^3.7.2",
