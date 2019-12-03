@@ -19,7 +19,11 @@
     "@celo/contractkit": "^0.2.4",
     "@hapi/joi": "^16.1.7",
     "app-root-path": "^3.0.0",
+    "bluebird": "^3.7.2",
+    "debug": "^4.1.1",
     "dotenv": "^8.2.0",
+    "mongoose": "^5.7.13",
+    "ms": "^2.1.2",
     "pino": "^5.13.6",
     "pino-pretty": "^3.4.0"
   },
