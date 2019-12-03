@@ -2,7 +2,7 @@
 import './config/env'
 import { newKit } from '@celo/contractkit'
 import initDB from './config/db'
-import { debugWallet, debugStorage, debugApp } from './config/debug'
+import { debugWallet } from './config/debug'
 import PrivateKey from './models/private-key'
 import Logger from './config/logger'
 import app from './config/express'
