@@ -15,5 +15,6 @@ const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
 // Create wallet
 const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
 
-//
-console.log(wallet)
+// Encrypt and store wallet
+const { privateKey } = wallet['0']
+console.log(privateKey)
