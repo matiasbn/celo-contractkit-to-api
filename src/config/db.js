@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import bluebird from 'bluebird'
 import ms from 'ms'
-import { debugMongoose } from './debug'
+import { debugApp } from './debug'
 
 const options = {
   promiseLibrary: bluebird,
@@ -17,8 +17,25 @@ mongoose.set('useCreateIndex', true)
 const initDB = () => {
   mongoose
     .connect(mongoDatabaseUri, options)
-    .then(() => debugMongoose('Mongodb connected'))
-    .catch((error) => debugMongoose(`Failed to connect to mongodb ${error.toString()}`))
+    .then(() => debugApp('Mongodb connected'))
+    .catch((error) => debugApp(`Failed to connect to mongodb ${error.toString()}`))
+
+  // mongoose
+  //   .connection
+  //   .once('open', () => {
+  //     const server = http.createServer(app)
+  //     const IO = SocketIO(server)
+
+  //     app.use((request, response, next) => {
+  //       request.io = IO
+  //       next()
+  //     })
+
+  //     logger.info('Starting Express Server...')
+  //     debugApp('Starting Express Server...')
+
+  //     server.listen(apiPort, () => logger.info('Server running'))
+  //   })
 }
 
 export default initDB
