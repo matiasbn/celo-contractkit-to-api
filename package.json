@@ -82,6 +82,7 @@
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
-    ]
-  }
+    ],
+    "setupFiles":["./test/config/env.js"]
+    }
 }
