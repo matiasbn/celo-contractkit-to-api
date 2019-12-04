@@ -23,21 +23,24 @@ const createWallet = async (request, response) => {
     const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
 
     // Encrypt and store wallet
-    const { privateKey } = wallet['0']
+    const { address, privateKey } = wallet['0']
     debugControllers(privateKey)
 
     // Clear wallets
     web3.eth.accounts.wallet.clear()
-
 
     const privateKeys = await PrivateKey.find({ $or: [{ email }, { phone }] })
     debugControllers(privateKeys)
     if (privateKeys.length > 0) {
       response.status(401).json({ message: ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED })
     } else {
-      const state = new PrivateKey({ email, privateKey, phone })
+      const state = new PrivateKey({
+        email, privateKey, phone, address,
+      })
       await state.save()
-      response.status(200).json(state)
+      const resp = { address: state.address, email: state.email, phone: state.phone }
+      debugControllers(resp)
+      response.status(200).json(resp)
     }
   } catch (error) {
     response.status(500).json(error)
@@ -46,13 +49,13 @@ const createWallet = async (request, response) => {
 
 const fetchWallet = async (request, response) => {
   const projections = {
-    _id: 0, privateKey: 1, email: 1, phone: 1,
+    _id: 0, address: 1, email: 1, phone: 1,
   }
   try {
-    const { email } = request.body
-    const privateKey = await PrivateKey.findOne({ email }, projections).lean()
+    const { email, phone } = request.body
+    const privateKey = await PrivateKey.findOne({ email, phone }, projections).lean()
     if (!privateKey) {
-      response.status(401).json({ message: 'private key not found for email or phone number' })
+      response.status(401).json({ message: ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND })
     } else {
       response.status(200).json(privateKey)
     }

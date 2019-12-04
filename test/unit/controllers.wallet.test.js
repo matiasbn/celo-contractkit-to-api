@@ -11,7 +11,6 @@ import mockResponse from '../helpers/mock-response'
 let email
 let phone
 
-
 describe('wallet controller unit testing', () => {
   beforeAll(async () => {
     initDB(app)
@@ -32,6 +31,7 @@ describe('wallet controller unit testing', () => {
       expect(storedKey.email).toBe(email)
       expect(storedKey.phone).toBe(phone)
       expect(storedKey.privateKey).toBeDefined()
+      expect(storedKey.address).toBeDefined()
     })
 
     it('should not store the same email or phone number twice', async () => {
@@ -57,10 +57,18 @@ describe('wallet controller unit testing', () => {
       expect(res.json).toBeCalledWith({ message: ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED })
     })
 
-    it('should not store the private key if either email or phone number are not sent', async () => {
-
+    it('should return an object with email, phone and address fields when registering', async () => {
+      const req = mockRequest({ body: { email: 'matias', phone: '1234' } })
+      const res = mockResponse()
+      await Controller.createWallet(req, res)
+      const response = res.json.mock.calls[0][0]
+      expect(res.status).toBeCalledWith(200)
+      expect(response.email).toBe('matias')
+      expect(response.phone).toBe('1234')
+      expect(response.address).toBeDefined()
     })
   })
+
   describe('fetchWallet unit tests', () => {
     let req
     let res
@@ -72,7 +80,7 @@ describe('wallet controller unit testing', () => {
       await Controller.createWallet(req, res)
     })
 
-    it('should fetch an object with email, phone and private key', async () => {
+    it('should fetch an object with email, phone and address', async () => {
       // Fetch the wallet
       res = mockResponse()
       await Controller.fetchWallet(req, res)
@@ -80,7 +88,7 @@ describe('wallet controller unit testing', () => {
       const response = res.json.mock.calls[0][0]
       expect(response.email).toBe(email)
       expect(response.phone).toBe(phone)
-      expect(response.privateKey).toBeDefined()
+      expect(response.address).toBeDefined()
     })
   })
 })

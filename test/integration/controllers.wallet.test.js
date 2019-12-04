@@ -16,4 +16,7 @@ describe('wallet route integration testing', () => {
   it('should not store the private key if either email or phone number are not sent', async () => {
 
   })
+  it('should not fetch the private key if either email or phone number are not sent', async () => {
+
+  })
 })
