@@ -19,13 +19,5 @@ router.get('/', (request, response) => {
 
 router
   .use('/wallet', WalletRoutes)
-//   .use('/companies', CompanyRoutes)
-//   .use('/energyFees', EnergyFeeRoutes)
-//   .use('/meters', MeterRoutes)
-//   .use('/netatmo', NetatmoRoutes)
-//   .use('/profile', ProfileRoutes)
-//   .use('/report', ReportRoutes)
-//   .use('/users', UserRoutes)
-//   .use('/wenuSwitch', WenuSwitchRoutes)
 
 export default router
