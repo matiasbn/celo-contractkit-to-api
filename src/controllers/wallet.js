@@ -1,7 +1,7 @@
 import { newKit } from '@celo/contractkit'
 import { debugControllers } from '../config/debug'
 import PrivateKey from '../models/private-key'
-import Logger from '../config/logger'
+// import Logger from '../config/logger'
 
 const createWallet = async (request, response) => {
   // const { email, phone } = request
@@ -25,7 +25,6 @@ const createWallet = async (request, response) => {
   const { privateKey } = wallet['0']
   debugControllers(privateKey)
 
-  response.success()
   try {
     const privateKeyObject = {
       email: 'matias.barriosn@gmail.com',
@@ -34,8 +33,9 @@ const createWallet = async (request, response) => {
     }
     const state = new PrivateKey(privateKeyObject)
     await state.save()
+    response.success({})
   } catch (error) {
-    Logger.error(error)
+    response.error(error)
   }
 }
 

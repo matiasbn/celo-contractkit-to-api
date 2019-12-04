@@ -5,8 +5,7 @@ import http from 'http'
 import { debugMongo, debugExpress } from './debug'
 
 const expressPort = process.env.APP_PORT || 3000
-const mongoDatabaseUri = process.env.MONGO_URI
-
+const mongoDatabaseUri = process.env.MONGO_URI || 'mongodb://localhost/test'
 
 const options = {
   promiseLibrary: bluebird,
