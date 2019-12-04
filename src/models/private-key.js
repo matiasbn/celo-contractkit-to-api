@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import uniqueValidator from 'mongoose-unique-validator'
 
 const PrivateKeySchema = new Schema({
   privateKey: {
@@ -8,14 +9,18 @@ const PrivateKeySchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   phone: {
     type: String,
     required: true,
+    unique: true,
   },
 }, {
   autoIndex: true,
   timestamps: true,
 })
+
+PrivateKeySchema.plugin(uniqueValidator)
 
 export default mongoose.model('private-keys', PrivateKeySchema)

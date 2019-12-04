@@ -9,6 +9,7 @@
   "private": true,
   "scripts": {
     "test": "jest --watchAll",
+    "test:verbose": "jest --watchAll --verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug:mongo": "DEBUG='demo::mongo' nodemon --watch .env --watch src --exec babel-node src --source-maps",
@@ -27,6 +28,7 @@
     "@celo/contractkit": "^0.2.4",
     "@feathersjs/errors": "3.3.6",
     "@hapi/joi": "^16.1.7",
+    "a2a": "^0.2.0",
     "app-root-path": "^3.0.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
@@ -40,6 +42,7 @@
     "helmet": "^3.21.2",
     "method-override": "^3.0.0",
     "mongoose": "^5.7.13",
+    "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.9.1",
     "ms": "^2.1.2",
     "pino": "^5.13.6",
