@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "test": "jest --watchAll",
-    "test:verbose": "jest --watchAll --verbose",
+    "test:verbose": "DEBUG='test' jest --watchAll --verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug:mongo": "DEBUG='demo::mongo' nodemon --watch .env --watch src --exec babel-node src --source-maps",
@@ -88,7 +88,10 @@
       "/node_modules/"
     ],
     "setupFiles": [
-      "./test/config/env.js"
+      "./test/config/env.setup.js"
+    ],
+    "setupFilesAfterEnv":[
+      "./test/config/initdb.setup.js"
     ]
   }
 }

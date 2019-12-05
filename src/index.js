@@ -1,6 +1,6 @@
 
 import './config/env'
-import initDB from './config/db'
+import MongoClient from './config/db'
 import app from './config/express'
 
-initDB(app)
+new MongoClient().getInstance(app)

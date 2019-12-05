@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import responder from 'express-api-responder'
 import WalletRoutes from './wallet'
+import BalanceRoutes from './balance'
 
 const router = new Router()
 
@@ -19,5 +20,6 @@ router.get('/', (request, response) => {
 
 router
   .use('/wallet', WalletRoutes)
+  .use('/balance', BalanceRoutes)
 
 export default router
