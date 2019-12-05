@@ -2,10 +2,7 @@ import mongoose from 'mongoose'
 import bluebird from 'bluebird'
 import ms from 'ms'
 import http from 'http'
-import { debugMongo, debugExpress } from './debug'
-
-const expressPort = process.env.APP_PORT || 3000
-const mongoDatabaseUri = process.env.MONGO_URI || 'mongodb://localhost/test'
+import { debugMongo, debugExpress, debugTest } from './debug'
 
 const options = {
   promiseLibrary: bluebird,
@@ -18,26 +15,43 @@ const options = {
 
 mongoose.set('useCreateIndex', true)
 
-const initDB = (app) => {
-  mongoose
-    .connect(mongoDatabaseUri, options)
-    .then(() => debugMongo('Mongodb connected'))
-    .catch((error) => debugMongo(`Failed to connect to mongodb ${error.toString()}`))
+class MongoClient {
+  constructor(databaseName) {
+    this.instance = null
+    this.expressPort = process.env.APP_PORT || 3000
+    this.database = databaseName || process.env.DATABASE_NAME || 'celopipol'
+    this.mongoDatabaseUri = `${process.env.MONGO_URI}${this.database}` || 'mongodb://localhost/test'
+    debugMongo(this.mongoDatabaseUri)
+    debugTest('mongo-uri', this.mongoDatabaseUri)
+  }
 
-  mongoose
-    .connection
-    .once('open', () => {
-      const server = http.createServer(app)
-      // const IO = SocketIO(server)
+  createInstance(app) {
+    mongoose
+      .connect(this.mongoDatabaseUri, options)
+      .then(() => debugMongo('Mongodb connected'))
+      .catch((error) => debugMongo(`Failed to connect to mongodb ${error.toString()}`))
 
-      // app.use((request, response, next) => {
-      //   request.io = IO
-      //   next()
-      // })
-      debugMongo('Starting Express Server...')
+    mongoose
+      .connection
+      .once('open', () => {
+        if (app) {
+          const server = http.createServer(app)
+          debugMongo('Starting Express Server...')
 
-      server.listen(expressPort, () => debugExpress(`Server running on port: ${expressPort}`))
-    })
+          server.listen(this.expressPort, () => debugExpress(`Server running on port: ${this.expressPort}`))
+        }
+      })
+    this.instance = mongoose
+    return this.instance
+  }
+
+  getInstance(app) {
+    if (!this.instance) {
+      return this.createInstance(app)
+    }
+
+    return this.instance
+  }
 }
 
-export default initDB
+export default MongoClient
