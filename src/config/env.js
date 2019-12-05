@@ -7,7 +7,7 @@ dotenv.config({
   path: `${appRootPath.path}/.env`,
 })
 
-const environmentVarsSchema = Joi.object(envSchema())
+const environmentVarsSchema = Joi.object(envSchema('main'))
   .unknown()
   .required()
 

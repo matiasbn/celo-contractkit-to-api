@@ -21,7 +21,7 @@ class MongoClient {
     this.expressPort = process.env.APP_PORT || 3000
     this.database = databaseName || process.env.DATABASE_NAME || 'celopipol'
     this.mongoDatabaseUri = `${process.env.MONGO_URI}${this.database}` || 'mongodb://localhost/test'
-    debugMongo(this.mongoDatabaseUri)
+    debugMongo('mongo-uri', this.mongoDatabaseUri)
     debugTest('mongo-uri', this.mongoDatabaseUri)
   }
 

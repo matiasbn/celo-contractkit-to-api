@@ -14,6 +14,7 @@ const envSchema = (env) => {
     NODE_ENV: joiString.required().valid('development', 'production', 'test').default('development'),
     MONGO_URI: joiString.required(),
     KEY_SIZE: joiString.required(),
+    CELO_URL: joiString.required(),
     ...env === 'main' && { DATABASE_NAME: joiString.required() },
   }
 }
