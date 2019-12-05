@@ -7,7 +7,7 @@ const debugExpress = debug('demo::express')
 const debugStart = debug('demo::app::start')
 const debugRoutes = debug('demo::app::routes')
 const debugControllers = debug('demo::app::controllers')
-const debugTest = debug('test')
+const debugTest = debug('demo::test')
 
 export {
   debugMongo,

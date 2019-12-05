@@ -7,11 +7,9 @@ import mockRequest from '../helpers/mock-request'
 import mockResponse from '../helpers/mock-response'
 import MongoClient from '../../src/config/db'
 
-// setup database name to connect to different databases per test on mongo
-process.env.DATABASE_NAME = 'test-controller-balance'
-
 // Connect to database
-new MongoClient(process.env.DATABASE_NAME).getInstance()
+// setup database name to connect to different databases per test on mongo
+new MongoClient('test-controller-balance').getInstance()
 
 
 const email = 'matias.barriosn@gmail.com'
