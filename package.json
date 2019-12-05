@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "test": "jest --watchAll",
-    "test:verbose": "DEBUG='test' jest --watchAll --verbose",
+    "test:verbose": "jest --watchAll --verbose",
+    "test:debug:verbose": "DEBUG='test' jest --watchAll --verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug:mongo": "DEBUG='demo::mongo' nodemon --watch .env --watch src --exec babel-node src --source-maps",
