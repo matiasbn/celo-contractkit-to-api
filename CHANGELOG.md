@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.2.0...v0.2.1) (2019-12-05)
+
+
+### Bug Fixes
+
+* debug test ([d5eb037](https://bitbucket.org/cryptopipol/pipol-demo/commit/d5eb037))
+
+
+### Features
+
+* **jest:** mock res and resp ([cdd86c1](https://bitbucket.org/cryptopipol/pipol-demo/commit/cdd86c1))
+* **jest:** unit and integration tests separated ([792df20](https://bitbucket.org/cryptopipol/pipol-demo/commit/792df20))
+* centralized env schema check ([8cd217c](https://bitbucket.org/cryptopipol/pipol-demo/commit/8cd217c))
+* express-api-responder added ([06f1f71](https://bitbucket.org/cryptopipol/pipol-demo/commit/06f1f71))
+* fetch route added ([6e887df](https://bitbucket.org/cryptopipol/pipol-demo/commit/6e887df))
+* standalone database access ([791be53](https://bitbucket.org/cryptopipol/pipol-demo/commit/791be53))
+
 ## [0.2.0](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.1.0...v0.2.0) (2019-12-04)
 
 
