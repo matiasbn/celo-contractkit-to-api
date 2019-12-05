@@ -39,30 +39,34 @@ describe('wallet controller unit testing', () => {
       let req = mockRequest({ body: { email, phone } })
       let res = mockResponse()
       await Controller.createWallet(req, res)
-      expect(res.status).toBeCalledWith(401)
-      expect(res.json).toBeCalledWith({ message: ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED })
+      let error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED)
 
       // try with the same email but different phone
       req = mockRequest({ body: { email, phone: '0' } })
       res = mockResponse()
       await Controller.createWallet(req, res)
-      expect(res.status).toBeCalledWith(401)
-      expect(res.json).toBeCalledWith({ message: ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED })
+      // eslint-disable-next-line prefer-destructuring
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED)
 
       // try with the same phone but different email
       req = mockRequest({ body: { email: 'm', phone } })
       res = mockResponse()
       await Controller.createWallet(req, res)
-      expect(res.status).toBeCalledWith(401)
-      expect(res.json).toBeCalledWith({ message: ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED })
+      // eslint-disable-next-line prefer-destructuring
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED)
     })
 
     it('should return an object with email, phone and address fields when registering', async () => {
       const req = mockRequest({ body: { email: 'matias', phone: '1234' } })
       const res = mockResponse()
       await Controller.createWallet(req, res)
-      const response = res.json.mock.calls[0][0]
-      expect(res.status).toBeCalledWith(200)
+      const response = res.success.mock.calls[0][0]
       expect(response.email).toBe('matias')
       expect(response.phone).toBe('1234')
       expect(response.address).toBeDefined()
@@ -84,11 +88,20 @@ describe('wallet controller unit testing', () => {
       // Fetch the wallet
       res = mockResponse()
       await Controller.fetchWallet(req, res)
-      expect(res.status).toBeCalledWith(200)
-      const response = res.json.mock.calls[0][0]
+      const response = res.success.mock.calls[0][0]
       expect(response.email).toBe(email)
       expect(response.phone).toBe(phone)
       expect(response.address).toBeDefined()
+    })
+
+    it('should throw 401 if private key is not present for stated email', async () => {
+      // Fetch the wallet
+      req = mockRequest({ body: { email: 'matias' } })
+      res = mockResponse()
+      await Controller.fetchWallet(req, res)
+      const error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
     })
   })
 })

@@ -1,13 +1,13 @@
 import { Router } from 'express'
-// import expressApiResponder from 'express-api-responder'
+import responder from 'express-api-responder'
 import WalletRoutes from './wallet'
 
 const router = new Router()
 
-// router.use(expressApiResponder({
-//   includeCode: 'status',
-//   includeSuccess: 'success',
-// }))
+router.use(responder({
+  includeCode: 'status',
+  includeSuccess: 'success',
+}))
 
 router.get('/', (request, response) => {
   const parsedResponse = {

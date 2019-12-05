@@ -10,40 +10,40 @@ const { web3 } = kit
 
 const createWallet = async (request, response) => {
   try {
-    debugControllers(request.body)
+    debugControllers('controllers/wallet', request.body)
     const { email, phone } = request.body
     // Create crypto key for AES
     // const crypto = (web3.utils.randomHex(keySize)).replace('0x', '')
 
     // Create random seed for wallet
     const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
-    debugControllers(randomSeed)
+    debugControllers('controllers/wallet', randomSeed)
 
     // Create wallet
     const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
 
     // Encrypt and store wallet
     const { address, privateKey } = wallet['0']
-    debugControllers(privateKey)
+    debugControllers('controllers/wallet', privateKey)
 
     // Clear wallets
     web3.eth.accounts.wallet.clear()
 
     const privateKeys = await PrivateKey.find({ $or: [{ email }, { phone }] })
-    debugControllers(privateKeys)
+    debugControllers('controllers/wallet', privateKeys)
     if (privateKeys.length > 0) {
-      response.status(401).json({ message: ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED })
+      response.error(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED, 401)
     } else {
       const state = new PrivateKey({
         email, privateKey, phone, address,
       })
       await state.save()
       const resp = { address: state.address, email: state.email, phone: state.phone }
-      debugControllers(resp)
-      response.status(200).json(resp)
+      debugControllers('controllers/wallet', resp)
+      response.success(resp)
     }
   } catch (error) {
-    response.status(500).json(error)
+    response.error(error, 500)
   }
 }
 
@@ -55,12 +55,13 @@ const fetchWallet = async (request, response) => {
     const { email, phone } = request.body
     const privateKey = await PrivateKey.findOne({ email, phone }, projections).lean()
     if (!privateKey) {
-      response.status(401).json({ message: ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND })
+      response.error(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND, 401)
     } else {
-      response.status(200).json(privateKey)
+      response.success(privateKey)
     }
   } catch (error) {
-    response.status(500).json(error)
+    console.log(error)
+    response.error(error, 500)
   }
 }
 export default {
