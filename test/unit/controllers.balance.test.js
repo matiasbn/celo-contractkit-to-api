@@ -1,4 +1,4 @@
-import { CeloContract, newKit } from '@celo/contractkit'
+import { newKit } from '@celo/contractkit'
 import debugTest from '../../src/config/debug'
 import Controller from '../../src/controllers/balance'
 import Wallet from '../../src/controllers/wallet'
@@ -7,7 +7,8 @@ import ERROR_MESSAGES from '../../src/common/error-messages'
 import mockRequest from '../helpers/mock-request'
 import mockResponse from '../helpers/mock-response'
 import MongoClient from '../../src/config/db'
-import getUSDBalance from '../../src/helpers/get-usd-balance'
+import usdBalance from '../../src/helpers/get-usd-balance'
+import gldBalance from '../../src/helpers/get-gld-balance'
 
 // Connect to database
 // setup database name to connect to different databases per test on mongo
@@ -33,8 +34,6 @@ const phone = '+56986698242'
 let req
 let res
 let emptyWallet
-let goldtoken
-let stabletoken
 
 describe('balance controller unit testing', () => {
   beforeAll(async () => {
@@ -54,9 +53,9 @@ describe('balance controller unit testing', () => {
   describe('cUSD unit tests', () => {
     it('should get the balance correctly', async () => {
       // try with empty wallet
-      let balance = await getUSDBalance(emptyWallet.address)
+      let balance = await usdBalance(emptyWallet.address)
       let stringBalance = balance.toString()
-      await Controller.getBalance(req, res)
+      await Controller.getUSDBalance(req, res)
       let response = res.success.mock.calls[0]
       let balanceController = response[0].balance.toString()
       expect(stringBalance).toBe(balanceController)
@@ -64,13 +63,72 @@ describe('balance controller unit testing', () => {
       // try with funded wallet
       req = mockRequest({ body: { email: funded.email, phone: funded.phone } })
       res = mockResponse()
-      balance = await getUSDBalance(funded.address)
+      balance = await usdBalance(funded.address)
       stringBalance = balance.toString()
-      await Controller.getBalance(req, res)
+      await Controller.getUSDBalance(req, res)
       // eslint-disable-next-line prefer-destructuring
       response = res.success.mock.calls[0]
       balanceController = response[0].balance.toString()
       expect(stringBalance).toBe(balanceController)
+    })
+
+    it('should return 401 if there is no private key for email-phone pair', async () => {
+      // try with wrong email
+      req = mockRequest({ body: { email: 'email.falso@gmail.com', phone } })
+      res = mockResponse()
+      await Controller.getUSDBalance(req, res)
+      let response = res.error.mock.calls[0]
+      expect(response[1]).toBe(401)
+      expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+      // try with wrong phone
+      req = mockRequest({ body: { email, phone: '+56986698244' } })
+      res = mockResponse()
+      await Controller.getUSDBalance(req, res)
+      response = res.error.mock.calls[0]
+      expect(response[1]).toBe(401)
+      expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+      response = 0
+    })
+  })
+
+  describe('cGLD unit tests', () => {
+    it('should get the balance correctly', async () => {
+      // try with empty wallet
+      let balance = await gldBalance(emptyWallet.address)
+      let stringBalance = balance.toString()
+      await Controller.getGLDBalance(req, res)
+      let response = res.success.mock.calls[0]
+      let balanceController = response[0].balance.toString()
+      expect(stringBalance).toBe(balanceController)
+
+      // try with funded wallet
+      req = mockRequest({ body: { email: funded.email, phone: funded.phone } })
+      res = mockResponse()
+      balance = await gldBalance(funded.address)
+      stringBalance = balance.toString()
+      await Controller.getGLDBalance(req, res)
+      // eslint-disable-next-line prefer-destructuring
+      response = res.success.mock.calls[0]
+      balanceController = response[0].balance.toString()
+      expect(stringBalance).toBe(balanceController)
+    })
+
+    it('should return 401 if there is no private key for email-phone pair', async () => {
+      // try with wrong email
+      req = mockRequest({ body: { email: 'email.falso@gmail.com', phone } })
+      res = mockResponse()
+      await Controller.getGLDBalance(req, res)
+      let response = res.error.mock.calls[0]
+      expect(response[1]).toBe(401)
+      expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+      // try with wrong phone
+      req = mockRequest({ body: { email, phone: '+56986698244' } })
+      res = mockResponse()
+      await Controller.getGLDBalance(req, res)
+      response = res.error.mock.calls[0]
+      expect(response[1]).toBe(401)
+      expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+      response = 0
     })
   })
 })
