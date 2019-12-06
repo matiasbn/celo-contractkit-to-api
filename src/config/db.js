@@ -23,7 +23,9 @@ class MongoClient {
     this.database = databaseName || process.env.DATABASE_NAME || 'celopipol'
     this.mongoDatabaseUri = `${process.env.MONGO_URI}${this.database}` || 'mongodb://localhost/test'
     debugMongo('mongo-uri', this.mongoDatabaseUri)
+    debugMongo('api-port', this.mongoDatabaseUri)
     debugTest('mongo-uri', this.mongoDatabaseUri)
+    debugTest('api-port', this.expressPort)
   }
 
   createInstance(app) {
@@ -38,8 +40,11 @@ class MongoClient {
         if (app) {
           const server = http.createServer(app)
           debugMongo('Starting Express Server...')
-
-          server.listen(this.expressPort, () => debugExpress(`Server running on port: ${this.expressPort}`))
+          debugTest('Starting Express Server...')
+          server.listen(this.expressPort, () => {
+            debugExpress(`Server running on port: ${this.expressPort}`)
+            debugTest(`Server running on port: ${this.expressPort}`)
+          })
         }
       })
     this.instance = mongoose

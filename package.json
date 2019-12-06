@@ -9,8 +9,9 @@
   "private": true,
   "scripts": {
     "test": "jest --watchAll",
-    "test:verbose": "jest test/unit/controllers.balance.test --watchAll --verbose",
-    "test:verbose:debug": "DEBUG='demotest::test' jest --watchAll --verbose",
+    "test:coverage": "jest --watchAll  --collectCoverage",
+    "test:verbose": "jest test/integration/* --watchAll --verbose",
+    "test:verbose:debug": "DEBUG='demotest::test' npm run test:verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug:mongo": "DEBUG='demo::mongo' nodemon --watch .env --watch src --exec babel-node src --source-maps",
