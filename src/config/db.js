@@ -16,9 +16,10 @@ const options = {
 mongoose.set('useCreateIndex', true)
 
 class MongoClient {
-  constructor(databaseName) {
+  constructor(_options) {
+    const { databaseName, appPort } = _options
     this.instance = null
-    this.expressPort = process.env.APP_PORT || 3000
+    this.expressPort = appPort || process.env.APP_PORT || 3000
     this.database = databaseName || process.env.DATABASE_NAME || 'celopipol'
     this.mongoDatabaseUri = `${process.env.MONGO_URI}${this.database}` || 'mongodb://localhost/test'
     debugMongo('mongo-uri', this.mongoDatabaseUri)

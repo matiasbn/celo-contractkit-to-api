@@ -8,7 +8,8 @@ import MongoClient from '../../src/config/db'
 
 // Connect to database
 // setup database name to connect to different databases per test on mongo
-new MongoClient('test-controller-wallet').getInstance()
+const options = { databaseName: 'test-controller-wallet' }
+new MongoClient(options).getInstance()
 
 let email
 let phone

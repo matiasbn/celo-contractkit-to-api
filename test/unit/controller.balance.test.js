@@ -12,8 +12,8 @@ import gldBalance from '../../src/helpers/get-gld-balance'
 
 // Connect to database
 // setup database name to connect to different databases per test on mongo
-new MongoClient('test-controller-balance').getInstance()
-
+const options = { databaseName: 'test-controller-balance' }
+new MongoClient(options).getInstance()
 
 // Set the kit
 const kit = newKit(process.env.CELO_URL)
