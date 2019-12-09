@@ -43,6 +43,7 @@
     "express-api-responder": "^1.1.1",
     "express-validator": "^6.3.0",
     "helmet": "^3.21.2",
+    "is-e164-phone-number": "^1.0.0",
     "method-override": "^3.0.0",
     "mongoose": "^5.7.13",
     "mongoose-unique-validator": "^2.0.3",
@@ -51,7 +52,8 @@
     "pino": "^5.13.6",
     "pino-pretty": "^3.4.0",
     "supertest": "^4.0.2",
-    "trim-request": "^1.0.6"
+    "trim-request": "^1.0.6",
+    "validator": "^12.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

@@ -1,3 +1,5 @@
+import isE164 from 'is-e164-phone-number'
+import isEmail from 'validator/lib/isEmail'
 import request from 'supertest'
 import PrivateKey from '../../src/models/private-key'
 import app from '../../src/config/express'
@@ -49,6 +51,27 @@ describe('cUSD balance route integration testing', () => {
     expect(res2.body.message.email).toBe(ERROR_MESSAGES.EMAIL_IS_EMPTY)
   })
 
+
+  it('should throw 422 if email or phone does not have the correct format', async () => {
+    // With badly formatted phone number
+    const badNumber = '+569827645367381765'
+    let hasCorrectFormat = isE164(badNumber)
+    expect(hasCorrectFormat).toBe(false)
+    const res = await request(app).get('/balance/cusd').send({ email, phone: badNumber })
+    expect(res.body.status).toBe(422)
+    expect(res.body.success).toBe(false)
+    expect(res.body.message.phone).toBe(ERROR_MESSAGES.IS_NOT_PHONE)
+
+    // With badly formatted email
+    const badEmail = 'matias@hola'
+    hasCorrectFormat = isEmail(badEmail)
+    expect(hasCorrectFormat).toBe(false)
+    const res2 = await request(app).get('/balance/cusd').send({ email: badEmail, phone })
+    expect(res2.body.status).toBe(422)
+    expect(res2.body.success).toBe(false)
+    expect(res2.body.message.email).toBe(ERROR_MESSAGES.IS_NOT_EMAIL)
+  })
+
   it('should throw 401 if email-phone pair is not found', async () => {
     // With unexisting phone
     const res = await request(app).get('/balance/cusd').send({ email, phone: '+56986698244' })
@@ -63,11 +86,12 @@ describe('cUSD balance route integration testing', () => {
     expect(res2.body.message).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
   })
 
-  it('should get balance correctly', async () => {
-    // With existing user and empty wallet
+  it('should get cUSD balance correctly', async () => {
+    // Should use an existing account with funds
     const res = await request(app).get('/balance/cusd').send({ email, phone })
     const correctBalance = await usdBalance(address)
     const { balance, status, success } = res.body
+    expect(balance).not.toBe('0')
     expect(status).toBe(200)
     expect(success).toBe(true)
     expect(balance).toBe(correctBalance.toString())
@@ -106,6 +130,27 @@ describe('cGLD balance route integration testing', () => {
     expect(res2.body.message.email).toBe(ERROR_MESSAGES.EMAIL_IS_EMPTY)
   })
 
+
+  it('should throw 422 if email or phone does not have the correct format', async () => {
+    // With badly formatted phone number
+    const badNumber = '+569827645367381765'
+    let hasCorrectFormat = isE164(badNumber)
+    expect(hasCorrectFormat).toBe(false)
+    const res = await request(app).get('/balance/cgld').send({ email, phone: badNumber })
+    expect(res.body.status).toBe(422)
+    expect(res.body.success).toBe(false)
+    expect(res.body.message.phone).toBe(ERROR_MESSAGES.IS_NOT_PHONE)
+
+    // With badly formatted email
+    const badEmail = 'matias@hola'
+    hasCorrectFormat = isEmail(badEmail)
+    expect(hasCorrectFormat).toBe(false)
+    const res2 = await request(app).get('/balance/cgld').send({ email: badEmail, phone })
+    expect(res2.body.status).toBe(422)
+    expect(res2.body.success).toBe(false)
+    expect(res2.body.message.email).toBe(ERROR_MESSAGES.IS_NOT_EMAIL)
+  })
+
   it('should throw 401 if email-phone pair is not found', async () => {
     // With non-existing phone
     const res = await request(app).get('/balance/cgld').send({ email, phone: '+56986698244' })
@@ -120,11 +165,12 @@ describe('cGLD balance route integration testing', () => {
     expect(res2.body.message).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
   })
 
-  it('should get balance correctly', async () => {
-    // With existing user and empty wallet
+  it('should get cGLD balance correctly', async () => {
+    // Should use an existing account with funds
     const res = await request(app).get('/balance/cgld').send({ email, phone })
     const correctBalance = await gldBalance(address)
     const { balance, status, success } = res.body
+    expect(balance).not.toBe('0')
     expect(status).toBe(200)
     expect(success).toBe(true)
     expect(balance).toBe(correctBalance.toString())
