@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest --watchAll",
     "test:coverage": "jest --watchAll  --collectCoverage",
-    "test:verbose": "jest test/integration/route.balance.test.js --watchAll --verbose",
+    "test:verbose": "jest test/integration/route.wallet.test.js --watchAll --verbose",
     "test:verbose:debug": "DEBUG='demotest::test' npm run test:verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
@@ -53,7 +53,8 @@
     "pino-pretty": "^3.4.0",
     "supertest": "^4.0.2",
     "trim-request": "^1.0.6",
-    "validator": "^12.1.0"
+    "validator": "^12.1.0",
+    "web3-utils": "^1.2.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
