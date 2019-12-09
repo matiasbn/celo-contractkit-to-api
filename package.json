@@ -1,6 +1,6 @@
 {
   "name": "pipol-demo",
-  "version": "0.2.2",
+  "version": "0.2.1",
   "description": "Pipol demo for Celo Blockchain",
   "main": "index.js",
   "repository": "git@bitbucket.org:cryptopipol/pipol-demo.git",
@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest --watchAll",
     "test:coverage": "jest --watchAll  --collectCoverage",
-    "test:verbose": "jest test/integration/* --watchAll --verbose",
+    "test:verbose": "jest test/integration/route.balance.test.js --watchAll --verbose",
     "test:verbose:debug": "DEBUG='demotest::test' npm run test:verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
@@ -32,6 +32,7 @@
     "@hapi/joi": "^16.1.7",
     "a2a": "^0.2.0",
     "app-root-path": "^3.0.0",
+    "axios": "^0.19.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -49,7 +50,8 @@
     "ms": "^2.1.2",
     "pino": "^5.13.6",
     "pino-pretty": "^3.4.0",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "trim-request": "^1.0.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",

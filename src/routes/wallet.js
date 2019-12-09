@@ -4,6 +4,6 @@ import Controller from '../controllers/wallet'
 const router = new Router()
 
 router.post('/create', Controller.createWallet)
-router.post('/fetch', Controller.fetchWallet)
+router.get('/fetch', Controller.fetchWallet)
 
 export default router
