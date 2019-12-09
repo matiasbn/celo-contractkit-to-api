@@ -19,8 +19,8 @@ class MongoClient {
   constructor(_options) {
     this.instance = null
     this.expressPort = (_options && _options.appPort) || process.env.APP_PORT || null
-    this.database = (_options && _options.databaseName) || process.env.DATABASE_NAME || 'celopipol'
-    this.mongoDatabaseUri = `${process.env.MONGO_URI}${this.database}` || 'mongodb://localhost/test'
+    this.database = (_options && _options.databaseName) || process.env.DATABASE_NAME || null
+    this.mongoDatabaseUri = `${process.env.MONGO_URI}${this.database}` || null
     debugMongo('mongo-uri', this.mongoDatabaseUri)
     debugMongo('api-port', this.expressPort)
     debugTest('mongo-uri', this.mongoDatabaseUri)
