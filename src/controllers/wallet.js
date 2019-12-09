@@ -1,12 +1,9 @@
-import { newKit } from '@celo/contractkit'
+import web3 from 'web3-utils'
 import { debugControllers } from '../config/debug'
 import PrivateKey from '../models/private-key'
 import ERROR_MESSAGES from '../common/error-messages'
 
 const keySize = Number(process.env.KEY_SIZE)
-// Create kit
-const kit = newKit('https://alfajores-forno.celo-testnet.org/')
-const { web3 } = kit
 
 const createWallet = async (request, response) => {
   try {
@@ -55,12 +52,11 @@ const fetchWallet = async (request, response) => {
     const { email, phone } = request.body
     const privateKey = await PrivateKey.findOne({ email, phone }, projections).lean()
     if (!privateKey) {
-      response.error(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND, 401)
+      response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
     } else {
       response.success(privateKey)
     }
   } catch (error) {
-    console.log(error)
     response.error(error, 500)
   }
 }
