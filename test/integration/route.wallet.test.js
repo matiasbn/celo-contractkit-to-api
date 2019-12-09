@@ -8,16 +8,14 @@ import mockRequest from '../helpers/mock-request'
 import mockResponse from '../helpers/mock-response'
 import MongoClient from '../../src/config/db'
 
-// Connect to database
-// setup database name to connect to different databases per test on mongo
-const options = { databaseName: 'test-route-wallet', appPort: 3005 }
-new MongoClient(options).getInstance(app)
-
-let email
-let phone
-
 
 describe('wallet route integration testing', () => {
+  beforeAll(async () => {
+    // Connect to database
+    // setup database name to connect to different databases per test on mongo
+    const options = { databaseName: 'test-route-wallet', appPort: 3005 }
+    await new MongoClient(options).getInstance()
+  })
   it('should not store the private key if either email or phone number are not sent', async () => {
 
   })
