@@ -20,4 +20,11 @@ router.get('/fetch',
   validator,
   Controller.fetchWallet)
 
+router.post('/delete',
+  trimRequest.all,
+  validation.checkFormat,
+  validation.checkBody,
+  validator,
+  Controller.deleteWallet)
+
 export default router

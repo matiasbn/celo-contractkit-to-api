@@ -60,10 +60,41 @@ const fetchWallet = async (request, response) => {
       response.success(privateKey)
     }
   } catch (error) {
+    debugControllers(error)
     response.error(error, 500)
   }
 }
+
+const deleteWallet = async (request, response) => {
+  try {
+    const { email, phone } = request.body
+    const privateKey = await PrivateKey.findOne({ email, phone }, { _id: 1 })
+    if (!privateKey) {
+      response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
+    } else {
+      const deletedKey = await PrivateKey.findByIdAndDelete(privateKey._id).lean()
+      debugControllers(deletedKey)
+      if (!deletedKey) {
+        response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
+      } else {
+        const resp = {
+          email: deletedKey.email,
+          phone: deletedKey.phone,
+          address: deletedKey.address,
+        }
+        debugControllers(resp)
+        response.success(resp)
+      }
+    }
+  } catch (error) {
+    debugControllers(error)
+    response.error(error, 500)
+  }
+}
+
+
 export default {
   createWallet,
   fetchWallet,
+  deleteWallet,
 }
