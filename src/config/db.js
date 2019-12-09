@@ -17,12 +17,9 @@ mongoose.set('useCreateIndex', true)
 
 class MongoClient {
   constructor(_options) {
-    let databaseName = null
-    let appPort = null
-    if (_options) { databaseName = _options.databaseName; appPort = _options.appPort }
     this.instance = null
-    this.expressPort = appPort || process.env.APP_PORT || null
-    this.database = databaseName || process.env.DATABASE_NAME || 'celopipol'
+    this.expressPort = (_options && _options.appPort) || process.env.APP_PORT || null
+    this.database = (_options && _options.databaseName) || process.env.DATABASE_NAME || 'celopipol'
     this.mongoDatabaseUri = `${process.env.MONGO_URI}${this.database}` || 'mongodb://localhost/test'
     debugMongo('mongo-uri', this.mongoDatabaseUri)
     debugMongo('api-port', this.expressPort)
