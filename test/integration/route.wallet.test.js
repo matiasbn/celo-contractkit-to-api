@@ -155,13 +155,13 @@ describe('fetch wallet route integration testing', () => {
     const res = await request(app).get('/wallet/fetch').send({ email, phone: '+56986698244' })
     expect(res.body.status).toBe(401)
     expect(res.body.success).toBe(false)
-    expect(res.body.message).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+    expect(res.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
 
     // With non-existing email
     const res2 = await request(app).get('/wallet/fetch').send({ email: 'matias@hola.cl', phone })
     expect(res2.body.status).toBe(401)
     expect(res2.body.success).toBe(false)
-    expect(res2.body.message).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+    expect(res2.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
   })
 
   it('should fetch the wallet correctly', async () => {

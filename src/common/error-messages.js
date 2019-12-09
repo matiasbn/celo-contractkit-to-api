@@ -5,7 +5,7 @@ const ERROR_MESSAGES = {
   IS_NOT_PHONE: 'phone with bad format',
   PHONE_IS_EMPTY: 'phone cannot be empty',
   PRIVATE_KEY_NOT_FOUND: 'private key not found for given pair email-phone',
-  WALLET_KEY_NOT_FOUND: 'wallet key not found for given pair email-phone',
+  WALLET_NOT_FOUND: 'wallet not found for given pair email-phone',
 }
 
 export default ERROR_MESSAGES

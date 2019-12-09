@@ -1,9 +1,12 @@
-import web3 from 'web3-utils'
+import { newKit } from '@celo/contractkit'
 import { debugControllers } from '../config/debug'
 import PrivateKey from '../models/private-key'
 import ERROR_MESSAGES from '../common/error-messages'
 
 const keySize = Number(process.env.KEY_SIZE)
+// Create kit
+const kit = newKit('https://alfajores-forno.celo-testnet.org/')
+const { web3 } = kit
 
 const createWallet = async (request, response) => {
   try {
