@@ -29,7 +29,7 @@ app.use(methodOverride())
 
 // Request logging. Skip if testing or production
 // app.use(morgan('dev'))
-app.use(morgan('combined', {
+app.use(morgan('dev', {
   skip() {
     return process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'production'
   },
