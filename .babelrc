@@ -6,5 +6,6 @@
     "add-module-exports",
     "@babel/plugin-transform-runtime",
   ],
-  "sourceMaps": true
+  "sourceMaps": true,
+  "retainLines": true
 }
