@@ -15,7 +15,7 @@ let phone
 describe('balance route integration testing', () => {
   beforeAll(async () => {
     const options = { databaseName: 'test-route-balance', appPort: 3006 }
-    await new MongoClient(options).getInstance()
+    await new MongoClient(options).getInstance(app)
   })
   it('should not store the private key if either email or phone number are not sent', async () => {
 

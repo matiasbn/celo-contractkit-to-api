@@ -14,7 +14,7 @@ describe('wallet route integration testing', () => {
     // Connect to database
     // setup database name to connect to different databases per test on mongo
     const options = { databaseName: 'test-route-wallet', appPort: 3005 }
-    await new MongoClient(options).getInstance()
+    await new MongoClient(options).getInstance(app)
   })
   it('should not store the private key if either email or phone number are not sent', async () => {
 
