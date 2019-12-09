@@ -4,11 +4,11 @@ import { newKit } from '@celo/contractkit'
 const kit = newKit(process.env.CELO_URL)
 
 
-const gldBalance = async (address) => {
+const usdBalance = async (address) => {
 // cGLD and cUSD wrappers
-  const goldToken = await kit.contracts.getGoldToken()
-  const balance = await goldToken.balanceOf(address)
+  const stabletoken = await kit.contracts.getStableToken()
+  const balance = await stabletoken.balanceOf(address)
   return balance
 }
 
-export default gldBalance
+export default usdBalance
