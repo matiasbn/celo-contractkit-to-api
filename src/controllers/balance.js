@@ -1,4 +1,4 @@
-import { debugControllers } from '../config/debug'
+import { debugControllers, debugTest } from '../config/debug'
 import PrivateKey from '../models/private-key'
 import ERROR_MESSAGES from '../common/error-messages'
 import usdBalance from '../helpers/get-usd-balance'
@@ -10,6 +10,8 @@ const getUSDBalance = async (request, response) => {
   }
   try {
     const { email, phone } = request.body
+    debugControllers(request.body)
+    debugTest(request.body)
     const privateKey = await PrivateKey.findOne({ email, phone }, projections).lean()
     if (!privateKey) {
       response.error(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND, 401)
@@ -19,6 +21,7 @@ const getUSDBalance = async (request, response) => {
       response.success({ balance })
     }
   } catch (error) {
+    debugTest(error)
     response.error(error, 500)
   }
 }
@@ -29,6 +32,8 @@ const getGLDBalance = async (request, response) => {
   }
   try {
     const { email, phone } = request.body
+    debugControllers(request.body)
+    debugTest(request.body)
     const privateKey = await PrivateKey.findOne({ email, phone }, projections).lean()
     if (!privateKey) {
       response.error(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND, 401)
@@ -38,6 +43,8 @@ const getGLDBalance = async (request, response) => {
       response.success({ balance })
     }
   } catch (error) {
+    debugControllers(error)
+    debugTest(error)
     response.error(error, 500)
   }
 }
