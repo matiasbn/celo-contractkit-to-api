@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.2](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.2.1...v0.2.2) (2019-12-09)
+
+
+### Bug Fixes
+
+* _options use fixed ([197d6c6](https://bitbucket.org/cryptopipol/pipol-demo/commit/197d6c6))
+* start express conditions ([585275f](https://bitbucket.org/cryptopipol/pipol-demo/commit/585275f))
+
+
+### Features
+
+* cGLD balance tests ([deb65bb](https://bitbucket.org/cryptopipol/pipol-demo/commit/deb65bb))
+* **mongoose:** recognize if  express is necesasary ([5ae6b88](https://bitbucket.org/cryptopipol/pipol-demo/commit/5ae6b88))
+* starting independent express servers ([2a9883a](https://bitbucket.org/cryptopipol/pipol-demo/commit/2a9883a))
+* testing balance controller ([e6387ec](https://bitbucket.org/cryptopipol/pipol-demo/commit/e6387ec))
+* updated db config to options object ([d745a56](https://bitbucket.org/cryptopipol/pipol-demo/commit/d745a56))
+
 ### [0.2.1](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.2.0...v0.2.1) (2019-12-05)
 
 
