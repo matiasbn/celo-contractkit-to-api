@@ -27,8 +27,13 @@ app.use(helmet())
 // Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it
 app.use(methodOverride())
 
-// Request logging. dev: console | production: file
-app.use(morgan('dev'))
+// Request logging. Skip if testing or production
+// app.use(morgan('dev'))
+app.use(morgan('combined', {
+  skip() {
+    return process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'production'
+  },
+}))
 
 // Routes
 app.use('/', routes)
