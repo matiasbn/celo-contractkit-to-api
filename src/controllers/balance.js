@@ -21,6 +21,7 @@ const getUSDBalance = async (request, response) => {
       response.success({ balance })
     }
   } catch (error) {
+    debugControllers(error)
     debugTest(error)
     response.error(error, 500)
   }
