@@ -70,23 +70,18 @@ const fetchWallet = async (request, response) => {
 const deleteWallet = async (request, response) => {
   try {
     const { email, phone } = request.body
-    const privateKey = await PrivateKey.findOne({ email, phone }, { _id: 1 })
-    if (!privateKey) {
+    const deletedKey = await PrivateKey.findOneAndDelete({ email, phone }).lean()
+    debugControllers(deletedKey)
+    if (!deletedKey) {
       response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
     } else {
-      const deletedKey = await PrivateKey.findByIdAndDelete(privateKey._id).lean()
-      debugControllers(deletedKey)
-      if (!deletedKey) {
-        response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
-      } else {
-        const resp = {
-          email: deletedKey.email,
-          phone: deletedKey.phone,
-          address: deletedKey.address,
-        }
-        debugControllers(resp)
-        response.success(resp)
+      const resp = {
+        email: deletedKey.email,
+        phone: deletedKey.phone,
+        address: deletedKey.address,
       }
+      debugControllers(resp)
+      response.success(resp)
     }
   } catch (error) {
     debugControllers(error)
@@ -97,40 +92,34 @@ const deleteWallet = async (request, response) => {
 const updateWallet = async (request, response) => {
   try {
     const { email, phone } = request.body
-    const privateKey = await PrivateKey.findOne({ email, phone }, { _id: 1 }).lean()
-    debugControllers(privateKey)
-    if (!privateKey) {
+    // Create random seed for wallet
+    const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
+    debugControllers(randomSeed)
+
+    // Create wallet
+    const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
+
+    // Encrypt and store wallet
+    const { address, privateKey: newPrivateKey } = wallet['0']
+    debugControllers(newPrivateKey)
+
+    // Clear wallets
+    web3.eth.accounts.wallet.clear()
+
+    // Update wallet
+    const newWallet = { address, privateKey: newPrivateKey }
+    const updatedKey = await PrivateKey.findOneAndUpdate({ email, phone }, { $set: newWallet }).lean()
+    debugControllers(updatedKey)
+    if (!updatedKey) {
       response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
     } else {
-      // Create random seed for wallet
-      const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
-      debugControllers(randomSeed)
-
-      // Create wallet
-      const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
-
-      // Encrypt and store wallet
-      const { address, privateKey: newPrivateKey } = wallet['0']
-      debugControllers(newPrivateKey)
-
-      // Clear wallets
-      web3.eth.accounts.wallet.clear()
-
-      // Update wallet
-      const newWallet = { address, privateKey: newPrivateKey }
-      const oldKey = await PrivateKey.findOneAndUpdate({ _id: privateKey._id }, { $set: newWallet }).lean()
-      debugControllers(oldKey)
-      if (!oldKey) {
-        response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
-      } else {
-        const resp = {
-          address,
-          email: oldKey.email,
-          phone: oldKey.phone,
-        }
-        debugControllers(resp)
-        response.success(resp)
+      const resp = {
+        address,
+        email: updatedKey.email,
+        phone: updatedKey.phone,
       }
+      debugControllers(resp)
+      response.success(resp)
     }
   } catch (error) {
     debugControllers(error)

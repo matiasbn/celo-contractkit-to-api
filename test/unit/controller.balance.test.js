@@ -30,7 +30,7 @@ const funded = {
 const fundedAccount = new PrivateKey(funded)
 
 const email = 'matias.barriosn@gmail.com'
-const phone = '+56986698242'
+const phone = '+56986673341'
 let req
 let res
 let emptyWallet

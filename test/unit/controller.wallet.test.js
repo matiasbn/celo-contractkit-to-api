@@ -1,4 +1,4 @@
-import debugTest from '../../src/config/debug'
+import { debugTest } from '../../src/config/debug'
 import Controller from '../../src/controllers/wallet'
 import PrivateKey from '../../src/models/private-key'
 import ERROR_MESSAGES from '../../src/common/error-messages'
@@ -11,15 +11,11 @@ import MongoClient from '../../src/config/db'
 const options = { databaseName: 'test-controller-wallet' }
 new MongoClient(options).getInstance()
 
-let email
-let phone
+const email = 'matias.barriosn@gmail.com'
+const phone = '+56986673341'
 
 
 describe('wallet controller unit testing', () => {
-  beforeAll(async () => {
-    email = 'matias.barriosn@gmail.com'
-    phone = '+56986698242'
-  })
   describe('createWallet unit tests', () => {
     beforeAll(async () => {
       await PrivateKey.deleteMany({})
@@ -79,32 +75,136 @@ describe('wallet controller unit testing', () => {
   describe('fetchWallet unit tests', () => {
     let req
     let res
-    beforeAll(async () => {
+    beforeEach(async () => {
       await PrivateKey.deleteMany({})
       req = mockRequest({ body: { email, phone } })
       res = mockResponse()
-      // Create a wallet
       await Controller.createWallet(req, res)
     })
 
+    it('should throw 401 if private key is not present for stated email or phone', async () => {
+      // Fetch the wallet with wrong email
+      req = mockRequest({ body: { email: 'matias', phone } })
+      await Controller.fetchWallet(req, res)
+      let error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+
+      // Fetch the wallet with wrong phone
+      req = mockRequest({ body: { email, phone: '1234' } })
+      await Controller.fetchWallet(req, res)
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+
+      // Fetch the wallet with both wrong
+      req = mockRequest({ body: { email: 'matias', phone: '1234' } })
+      await Controller.fetchWallet(req, res)
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+    })
+
     it('should fetch an object with email, phone and address', async () => {
-      // Fetch the wallet
-      res = mockResponse()
       await Controller.fetchWallet(req, res)
       const response = res.success.mock.calls[0][0]
       expect(response.email).toBe(email)
       expect(response.phone).toBe(phone)
       expect(response.address).toBeDefined()
     })
+  })
 
-    it('should throw 401 if private key is not present for stated email', async () => {
-      // Fetch the wallet
-      req = mockRequest({ body: { email: 'matias' } })
+  describe('deleteWallet unit tests', () => {
+    let req
+    let res
+    beforeEach(async () => {
+      req = mockRequest({ body: { email, phone } })
       res = mockResponse()
-      await Controller.fetchWallet(req, res)
-      const error = res.error.mock.calls[0]
+      await PrivateKey.deleteMany({})
+      // Create a wallet
+      await Controller.createWallet(req, res)
+    })
+
+
+    it('should throw 401 if private key is not present for stated email or phone', async () => {
+      // Delete the wallet with wrong email
+      req = mockRequest({ body: { email: 'matias', phone } })
+      await Controller.deleteWallet(req, res)
+      let error = res.error.mock.calls[0]
       expect(error[1]).toBe(401)
-      expect(error[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+
+      // Delete the wallet with wrong phone
+      req = mockRequest({ body: { email, phone: '1234' } })
+      await Controller.deleteWallet(req, res)
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+
+      // Delete the wallet with both wrong
+      req = mockRequest({ body: { email: 'matias', phone: '1234' } })
+      await Controller.deleteWallet(req, res)
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+    })
+
+    it('should return an object with deleted email, phone and address', async () => {
+      res = mockResponse()
+      await Controller.deleteWallet(req, res)
+      const response = res.success.mock.calls[0][0]
+      expect(response.email).toBe(email)
+      expect(response.phone).toBe(phone)
+      expect(response.address).toBeDefined()
+    })
+  })
+
+  describe('updateWallet unit tests', () => {
+    let req
+    let res
+    beforeEach(async () => {
+      req = mockRequest({ body: { email, phone } })
+      res = mockResponse()
+      await PrivateKey.deleteMany({})
+      // Create a wallet
+      await Controller.createWallet(req, mockResponse())
+    })
+
+    it('should throw 401 if private key is not present for stated email or phone', async () => {
+      // Update the wallet with wrong email
+      req = mockRequest({ body: { email: 'matias', phone } })
+      await Controller.updateWallet(req, res)
+      let error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+
+      // Update the wallet with wrong phone
+      req = mockRequest({ body: { email, phone: '1234' } })
+      await Controller.updateWallet(req, res)
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+
+      // Update the wallet with both wrong
+      req = mockRequest({ body: { email: 'matias', phone: '1234' } })
+      await Controller.updateWallet(req, res)
+      error = res.error.mock.calls[0]
+      expect(error[1]).toBe(401)
+      expect(error[0]).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
+    })
+
+    it('should return an object with email, phone and updated address', async () => {
+      // res = mockResponse()
+      const oldKey = await PrivateKey.findOne({ email, phone }, { _id: 0, address: 1 }).lean()
+      debugTest(oldKey)
+      await Controller.updateWallet(req, res)
+      const response = res.success.mock.calls[0][0]
+      debugTest(response)
+      debugTest(response)
+      expect(response.email).toBe(email)
+      expect(response.phone).toBe(phone)
+      expect(response.address).not.toBe(oldKey.address)
+      expect(response.address).toBeDefined()
     })
   })
 })
