@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { newKit } from '@celo/contractkit'
 import { debugControllers } from '../config/debug'
 import PrivateKey from '../models/private-key'
@@ -10,27 +11,27 @@ const { web3 } = kit
 
 const createWallet = async (request, response) => {
   try {
-    debugControllers('controllers/wallet', request.body)
+    debugControllers(request.body)
     const { email, phone } = request.body
     // Create crypto key for AES
     // const crypto = (web3.utils.randomHex(keySize)).replace('0x', '')
 
     // Create random seed for wallet
     const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
-    debugControllers('controllers/wallet', randomSeed)
+    debugControllers(randomSeed)
 
     // Create wallet
     const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
 
     // Encrypt and store wallet
     const { address, privateKey } = wallet['0']
-    debugControllers('controllers/wallet', privateKey)
+    debugControllers(privateKey)
 
     // Clear wallets
     web3.eth.accounts.wallet.clear()
 
     const privateKeys = await PrivateKey.find({ $or: [{ email }, { phone }] })
-    debugControllers('controllers/wallet', privateKeys)
+    debugControllers(privateKeys)
     if (privateKeys.length > 0) {
       response.error(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED, 401)
     } else {
@@ -39,10 +40,11 @@ const createWallet = async (request, response) => {
       })
       await state.save()
       const resp = { address: state.address, email: state.email, phone: state.phone }
-      debugControllers('controllers/wallet', resp)
+      debugControllers(resp)
       response.success(resp)
     }
   } catch (error) {
+    debugControllers(error)
     response.error(error, 500)
   }
 }
@@ -92,9 +94,54 @@ const deleteWallet = async (request, response) => {
   }
 }
 
+const updateWallet = async (request, response) => {
+  try {
+    const { email, phone } = request.body
+    const privateKey = await PrivateKey.findOne({ email, phone }, { _id: 1 }).lean()
+    debugControllers(privateKey)
+    if (!privateKey) {
+      response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
+    } else {
+      // Create random seed for wallet
+      const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
+      debugControllers(randomSeed)
+
+      // Create wallet
+      const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
+
+      // Encrypt and store wallet
+      const { address, privateKey: newPrivateKey } = wallet['0']
+      debugControllers(newPrivateKey)
+
+      // Clear wallets
+      web3.eth.accounts.wallet.clear()
+
+      // Update wallet
+      const newWallet = { address, privateKey: newPrivateKey }
+      const oldKey = await PrivateKey.findOneAndUpdate({ _id: privateKey._id }, { $set: newWallet }).lean()
+      debugControllers(oldKey)
+      if (!oldKey) {
+        response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
+      } else {
+        const resp = {
+          address,
+          email: oldKey.email,
+          phone: oldKey.phone,
+        }
+        debugControllers(resp)
+        response.success(resp)
+      }
+    }
+  } catch (error) {
+    debugControllers(error)
+    response.error(error, 500)
+  }
+}
+
 
 export default {
   createWallet,
   fetchWallet,
   deleteWallet,
+  updateWallet,
 }

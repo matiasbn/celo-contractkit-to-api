@@ -27,4 +27,11 @@ router.post('/delete',
   validator,
   Controller.deleteWallet)
 
+router.post('/update',
+  trimRequest.all,
+  validation.checkFormat,
+  validation.checkBody,
+  validator,
+  Controller.updateWallet)
+
 export default router
