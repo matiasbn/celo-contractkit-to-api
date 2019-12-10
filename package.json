@@ -27,10 +27,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.5",
-    "@celo/contractkit": "^0.2.4",
+    "@celo/contractkit": "0.1.6",
     "@feathersjs/errors": "3.3.6",
     "@hapi/joi": "^16.1.7",
     "a2a": "^0.2.0",
+    "agenda": "^2.2.0",
     "app-root-path": "^3.0.0",
     "axios": "^0.19.0",
     "bluebird": "^3.7.2",
