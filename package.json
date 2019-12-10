@@ -9,8 +9,8 @@
   "private": true,
   "scripts": {
     "test": "jest --watchAll",
-    "test:coverage": "jest --watchAll  --collectCoverage",
-    "test:verbose": "jest test/integration/route.wallet.test.js --watchAll --verbose",
+    "test:coverage": "jest --watch  --collectCoverage",
+    "test:verbose": "jest --coverage --changedSince=master --verbose",
     "test:verbose:debug": "DEBUG='demotest::test' npm run test:verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='demo::*' nodemon --watch .env --watch src --exec babel-node src --source-maps",
