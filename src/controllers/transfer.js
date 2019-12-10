@@ -15,7 +15,7 @@ const transferCUSD = async (request, response) => {
   try {
     debugControllers(request.body)
     const {
-      email, phone, toAddress,
+      email, phone, toAddress, amount,
     } = request.body
     const privKey = await PrivateKey.findOne({ email, phone }, { _id: 0, address: 1, privateKey: 1 }).lean()
     debugControllers(privKey)
@@ -28,7 +28,7 @@ const transferCUSD = async (request, response) => {
       web3.eth.accounts.wallet.clear()
       kit.addAccount(privateKey)
       kit.defaultAccount = address
-      const ether = kit.web3.utils.toWei('0.001', 'ether')
+      const ether = kit.web3.utils.toWei(amount, 'ether')
       const tx = await stableToken.transfer(toAddress, ether).send({
         from: address,
       })
