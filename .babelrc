@@ -5,6 +5,7 @@
   "plugins": [
     "add-module-exports",
     "@babel/plugin-transform-runtime",
+    ["babel-plugin-root-import"]
   ],
   "sourceMaps": true,
   "retainLines": true
