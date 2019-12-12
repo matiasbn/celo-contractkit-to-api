@@ -1,13 +1,25 @@
-// import mongoose from 'mongoose'
+import mongoose from 'mongoose'
+import TEST_CONFIG from '../common/test-config'
 
-// async function removeAllCollections() {
-//   const collections = Object.keys(mongoose.connection.collections)
-//   for (const collectionName of collections) {
-//     const collection = mongoose.connection.collections[collectionName]
-//     await collection.deleteMany()
-//   }
-// }
+const mongooseOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}
 
-// afterAll(async () => {
-//   await removeAllCollections()
-// })
+const dropDatabse = async (databaseName) => {
+  const conn = mongoose.createConnection(`${process.env.MONGO_URI}${databaseName}`, mongooseOptions)
+  await conn.dropDatabase()
+}
+
+// Drop all databases after
+async function cleanData() {
+  const promises = []
+  TEST_CONFIG.forEach((config) => {
+    if (config.drop) promises.push(dropDatabse(config.databaseName))
+  })
+  await Promise.all(promises)
+}
+
+afterAll(async () => {
+  await cleanData()
+})
