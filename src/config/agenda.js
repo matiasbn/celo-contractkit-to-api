@@ -9,34 +9,39 @@ const agenda = new Agenda({
   mongo: mongoose.connection,
 })
 
-agenda.on('start', (job) => {
+const parseMessage = (parameters) => {
+  const parsedMessage = []
+  if (parameters.jobType) parsedMessage.push(`[TYPE:${parameters.jobType}]`)
+  if (parameters.address) parsedMessage.push(`[FROM:${parameters.address}]`)
+  if (parameters.toAddress) parsedMessage.push(`[TO:${parameters.toAddress}]`)
+  if (parameters.amount) parsedMessage.push(`[AMOUNT:${parameters.amount}]`)
+  return parsedMessage.join('-')
+}
+
+const emitEvent = (params, success) => {
   const {
-    address, toAddress, amount, jobType,
-  } = job.attrs.data
-  const parsedMessage = `[STARTED]-[FROM:${address}]-[TO:${toAddress}]-[TYPE:${jobType}]${amount ? `-[AMOUNT:${amount}` : ''}`
+    address, toAddress, amount, emitHash, jobType,
+  } = params
+  emitter.emit(emitHash, {
+    address, toAddress, amount, type: jobType, success,
+  })
+}
+
+agenda.on('start', (job) => {
+  const parsedMessage = `[STARTED]-${parseMessage(job.attrs.data)}`
   Logger.info(parsedMessage)
 })
 
 agenda.on('success', async (job) => {
-  const {
-    address, toAddress, amount, emitHash, jobType,
-  } = job.attrs.data
-  emitter.emit(emitHash, {
-    address, toAddress, amount, type: jobType, success: true,
-  })
-  const parsedMessage = `[SUCCESS]-[FROM:${address}]-[TO:${toAddress}]-[TYPE:${jobType}]${amount ? `-[AMOUNT:${amount}]` : ''}`
+  emitEvent(job.attrs.data, true)
+  const parsedMessage = `[SUCCESS]-${parseMessage(job.attrs.data)}`
   Logger.info(parsedMessage)
   await job.remove()
 })
 
 agenda.on('fail', async (job) => {
-  const {
-    address, toAddress, amount, emitHash, jobType,
-  } = job.attrs.data
-  emitter.emit(emitHash, {
-    address, toAddress, amount, type: jobType, success: false,
-  })
-  const parsedMessage = `[FAILED ]-[FROM:${address}]-[TO:${toAddress}]-[TYPE:${jobType}]${amount ? `-[AMOUNT:${amount}` : ''}`
+  emitEvent(job.attrs.data, false)
+  const parsedMessage = `[FAILED ]-${parseMessage(job.attrs.data)}`
   Logger.info(parsedMessage)
   await job.remove()
 })

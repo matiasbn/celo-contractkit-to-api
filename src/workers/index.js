@@ -13,7 +13,7 @@ agenda.define(WORKER_NAMES.TRANSFER_CUSD, async (job, done) => {
     await Transfer.cUSD(privateKey, address, toAddress, amount)
     done()
   } catch (error) {
-    done(error)
+    done(new Error(error))
   }
 })
 

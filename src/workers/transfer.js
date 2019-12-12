@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
 import kit from '~/src/config/kit'
-import { debugWorkers } from '../config/debug'
-import Transaction from '../models/transactions'
-import Logger from '../config/logger'
+import { debugWorkers } from '~/src/config/debug'
+import Transaction from '~/src/models/transactions'
+import Logger from '~/src/config/logger'
 
 async function cUSD(privateKey, address, toAddress, amount) {
   try {
-    const stableToken = await kit.contracts.getStableToken()
-    const ether = kit.web3.utils.toWei(amount, 'ether')
     // Clean the wallets before execute transaction
     kit.web3.eth.accounts.wallet.clear()
+    const stableToken = await kit.contracts.getStableToken()
+    const ether = kit.web3.utils.toWei(amount, 'ether')
     kit.addAccount(privateKey)
     kit.defaultAccount = address
     const tx = await stableToken.transfer(toAddress, ether).send({
