@@ -32,7 +32,7 @@ agenda.on('success', async (job) => {
   await job.remove()
 })
 
-agenda.on('FAIL', async (job) => {
+agenda.on('fail', async (job) => {
   const {
     address, toAddress, amount, emitHash, jobType,
   } = job.attrs.data
