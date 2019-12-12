@@ -1,10 +1,13 @@
 /* eslint-disable max-len */
-import { debugControllers } from '../config/debug'
-import PrivateKey from '../models/private-key'
-import ERROR_MESSAGES from '../common/error-messages'
-import WORKER_NAMES from '../common/worker-names'
-import { enqueueJob } from '../config/agenda'
-
+import { debugControllers } from '~/src/config/debug'
+import PrivateKey from '~/src/models/private-key'
+import ERROR_MESSAGES from '~/src/common/error-messages'
+import WORKER_NAMES from '~/src/common/worker-names'
+import { enqueueJob } from '~/src/config/agenda'
+import Logger from '~/src/config/logger'
+import getSha256 from '~/src/helpers/get-sha-256'
+import emitter from '~/src/config/emitter'
+// import kit from '~/src/config/kit'
 
 const transferCUSD = async (request, response) => {
   try {
@@ -18,14 +21,25 @@ const transferCUSD = async (request, response) => {
       response.error(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED, 401)
     } else {
       const { privateKey, address } = privKey
+      const date = Date.now()
+      const emitHash = getSha256([address, date, WORKER_NAMES.TRANSFER_CUSD])
+      debugControllers(emitHash)
       const parameters = {
-        privateKey, address, toAddress, amount,
+        privateKey, address, toAddress, amount, emitHash,
       }
       await enqueueJob(parameters, WORKER_NAMES.TRANSFER_CUSD)
-      response.success(privKey)
+      emitter.on(emitHash, (resp) => {
+        const { success } = resp
+        delete resp.success
+        if (success) {
+          response.success(resp)
+        } else {
+          response.error(resp)
+        }
+      })
     }
   } catch (error) {
-    debugControllers(error)
+    Logger.error(error)
     response.error(error, 500)
   }
 }

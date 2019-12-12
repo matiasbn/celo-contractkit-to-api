@@ -8,6 +8,7 @@ const ERROR_MESSAGES = {
   IS_NOT_CHECKSUM_ADDRESS: 'given address is not checksum address',
   PHONE_IS_EMPTY: 'phone cannot be empty',
   PRIVATE_KEY_NOT_FOUND: 'private key not found for given pair email-phone',
+  TRANSACTION_FAILED: 'transaction failed',
   TO_ADDRESS_IS_EMPTY: 'toAddress cannot be empty',
   WALLET_NOT_FOUND: 'wallet not found for given pair email-phone',
 }
