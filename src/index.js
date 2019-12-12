@@ -3,7 +3,7 @@ import './config/env'
 import MongoClient from './config/db'
 import app from './config/express'
 import Logger from './config/logger'
-import { agenda } from './config/agenda'
+import agenda from './config/agenda'
 
 (async () => {
   try {
