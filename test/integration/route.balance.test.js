@@ -1,38 +1,46 @@
+import path from 'path'
 import isE164 from 'is-e164-phone-number'
 import isEmail from 'validator/lib/isEmail'
 import request from 'supertest'
 import PrivateKey from '../../src/models/private-key'
 import app from '../../src/config/express'
 import ERROR_MESSAGES from '../../src/common/error-messages'
+import TEST_ERROR_MESSAGES from '../common/error-messages'
 import MongoClient from '../../src/config/db'
 import usdBalance from '../../src/helpers/get-usd-balance'
 import gldBalance from '../../src/helpers/get-gld-balance'
 import { debugTest } from '../../src/config/debug'
+import getTestConfig from '../helpers/get-test-options'
+import Logger from '~/src/config/logger'
+
 
 const funded = {
   email: 'matias@gmail.com',
   phone: '+56986698243',
   address: '0x6a0ebFF8C9154aB69631B86234374aE952a66032',
   privateKey: '0xb4f5a86d5e7327c8b1a7b33d63324f0e7d6005626882d67cb1e3a5812f9ba0b8',
-}
+};
+
+(async () => {
+  const testOptions = getTestConfig(path.basename(__filename))
+  if (!testOptions) {
+    Logger.error(TEST_ERROR_MESSAGES.NO_TEST_CONFIG_FOUND)
+  }
+  await new MongoClient(testOptions).getInstance(app)
+})()
 
 describe('cUSD balance route integration testing', () => {
   let email
   let phone
   let address
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     try {
-      // Connect to database
-      // setup database name to connect to different databases per test on mongo
-      const options = { databaseName: 'test-route-balance-usd', appPort: 3006 }
-      await new MongoClient(options).getInstance(app)
       await PrivateKey.deleteMany({})
-      const fundedAccount = new PrivateKey(funded)
-      const privateKey = await fundedAccount.save()
-      email = privateKey.email
-      phone = privateKey.phone
-      address = privateKey.address
+      const fundedAccount = await PrivateKey.create(funded)
+      email = fundedAccount.email
+      phone = fundedAccount.phone
+      address = fundedAccount.address
     } catch (error) {
       debugTest(error)
     }
@@ -50,7 +58,6 @@ describe('cUSD balance route integration testing', () => {
     expect(res2.body.success).toBe(false)
     expect(res2.body.message.email).toBe(ERROR_MESSAGES.EMAIL_IS_EMPTY)
   })
-
 
   it('should throw 422 if email or phone does not have the correct format', async () => {
     // With badly formatted phone number
@@ -103,17 +110,12 @@ describe('cGLD balance route integration testing', () => {
   let phone
   let address
 
-  beforeAll(async () => {
-    // Connect to database
-    // setup database name to connect to different databases per test on mongo
-    const options = { databaseName: 'test-route-balance-gld', appPort: 3007 }
-    await new MongoClient(options).getInstance(app)
+  beforeEach(async () => {
     await PrivateKey.deleteMany({})
-    const fundedAccount = new PrivateKey(funded)
-    const privateKey = await fundedAccount.save()
-    email = privateKey.email
-    phone = privateKey.phone
-    address = privateKey.address
+    const fundedAccount = await PrivateKey.create(funded)
+    email = fundedAccount.email
+    phone = fundedAccount.phone
+    address = fundedAccount.address
   })
 
   it('should throw 422 if email or phone are not present on the request body', async () => {
@@ -129,7 +131,6 @@ describe('cGLD balance route integration testing', () => {
     expect(res2.body.success).toBe(false)
     expect(res2.body.message.email).toBe(ERROR_MESSAGES.EMAIL_IS_EMPTY)
   })
-
 
   it('should throw 422 if email or phone does not have the correct format', async () => {
     // With badly formatted phone number

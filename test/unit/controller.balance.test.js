@@ -1,4 +1,5 @@
-import { newKit } from '@celo/contractkit'
+import path from 'path'
+import kit from '~/src/config/kit'
 import debugTest from '../../src/config/debug'
 import Controller from '../../src/controllers/balance'
 import Wallet from '../../src/controllers/wallet'
@@ -9,15 +10,17 @@ import mockResponse from '../helpers/mock-response'
 import MongoClient from '../../src/config/db'
 import usdBalance from '../../src/helpers/get-usd-balance'
 import gldBalance from '../../src/helpers/get-gld-balance'
+import TEST_ERROR_MESSAGES from '../common/error-messages'
+import getTestConfig from '../helpers/get-test-options'
+import Logger from '~/src/config/logger'
 
-// Connect to database
-// setup database name to connect to different databases per test on mongo
-const options = { databaseName: 'test-controller-balance' }
-new MongoClient(options).getInstance()
-
-// Set the kit
-const kit = newKit(process.env.CELO_URL)
-const { web3 } = kit
+(async () => {
+  const testOptions = getTestConfig(path.basename(__filename))
+  if (!testOptions) {
+    Logger.error(TEST_ERROR_MESSAGES.NO_TEST_CONFIG_FOUND)
+  }
+  await new MongoClient(testOptions).getInstance()
+})()
 
 // Set the funded account to be stored
 const funded = {
@@ -27,7 +30,6 @@ const funded = {
   privateKey:
       '0xb4f5a86d5e7327c8b1a7b33d63324f0e7d6005626882d67cb1e3a5812f9ba0b8',
 }
-const fundedAccount = new PrivateKey(funded)
 
 const email = 'matias.barriosn@gmail.com'
 const phone = '+56986673341'
@@ -36,18 +38,13 @@ let res
 let emptyWallet
 
 describe('balance controller unit testing', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     await PrivateKey.deleteMany({})
     req = mockRequest({ body: { email, phone } })
     res = mockResponse()
-    await Wallet.createWallet(req, res)
+    await Wallet.createWallet(req, mockResponse())
     emptyWallet = await PrivateKey.findOne({ email, phone })
-    await fundedAccount.save()
-  })
-
-  beforeEach(async () => {
-    req = mockRequest({ body: { email, phone } })
-    res = mockResponse()
+    await PrivateKey.create(funded)
   })
 
   describe('cUSD unit tests', () => {

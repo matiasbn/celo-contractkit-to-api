@@ -1,3 +1,4 @@
+import path from 'path'
 import web3 from 'web3-utils'
 import isE164 from 'is-e164-phone-number'
 import isEmail from 'validator/lib/isEmail'
@@ -5,31 +6,37 @@ import request from 'supertest'
 import PrivateKey from '../../src/models/private-key'
 import app from '../../src/config/express'
 import ERROR_MESSAGES from '../../src/common/error-messages'
+import TEST_ERROR_MESSAGES from '../common/error-messages'
 import MongoClient from '../../src/config/db'
 import { debugTest } from '../../src/config/debug'
+import getTestConfig from '../helpers/get-test-options'
+import Logger from '~/src/config/logger'
 
 const funded = {
   email: 'matias@gmail.com',
   phone: '+56986698243',
   address: '0x6a0ebFF8C9154aB69631B86234374aE952a66032',
   privateKey: '0xb4f5a86d5e7327c8b1a7b33d63324f0e7d6005626882d67cb1e3a5812f9ba0b8',
-}
+};
+
+(async () => {
+  const testOptions = getTestConfig(path.basename(__filename))
+  if (!testOptions) {
+    Logger.error(TEST_ERROR_MESSAGES.NO_TEST_CONFIG_FOUND)
+  }
+  await new MongoClient(testOptions).getInstance(app)
+})()
 
 describe('create wallet route integration testing', () => {
   let email
   let phone
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     try {
-      // Connect to database
-      // setup database name to connect to different databases per test on mongo
-      const options = { databaseName: 'test-route-wallet-create', appPort: 3008 }
-      await new MongoClient(options).getInstance(app)
       await PrivateKey.deleteMany({})
-      const fundedAccount = new PrivateKey(funded)
-      const privateKey = await fundedAccount.save()
-      email = privateKey.email
-      phone = privateKey.phone
+      const fundedAccount = await PrivateKey.create(funded)
+      email = fundedAccount.email
+      phone = fundedAccount.phone
     } catch (error) {
       debugTest(error)
     }
@@ -102,17 +109,16 @@ describe('fetch wallet route integration testing', () => {
   let phone
   let address
 
-  beforeAll(async () => {
-    // Connect to database
-    // setup database name to connect to different databases per test on mongo
-    const options = { databaseName: 'test-route-wallet-fetch', appPort: 3009 }
-    await new MongoClient(options).getInstance(app)
-    await PrivateKey.deleteMany({})
-    const fundedAccount = new PrivateKey(funded)
-    const privateKey = await fundedAccount.save()
-    email = privateKey.email
-    phone = privateKey.phone
-    address = privateKey.address
+  beforeEach(async () => {
+    try {
+      await PrivateKey.deleteMany({})
+      const fundedAccount = await PrivateKey.create(funded)
+      email = fundedAccount.email
+      phone = fundedAccount.phone
+      address = fundedAccount.address
+    } catch (error) {
+      debugTest(error)
+    }
   })
 
   it('should throw 422 if email or phone are not present on the request body', async () => {
@@ -153,15 +159,15 @@ describe('fetch wallet route integration testing', () => {
   it('should throw 401 if email-phone pair is not found', async () => {
     // With non-existing phone
     const res = await request(app).get('/wallet/fetch').send({ email, phone: '+56986698244' })
+    expect(res.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
     expect(res.body.status).toBe(401)
     expect(res.body.success).toBe(false)
-    expect(res.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
 
     // With non-existing email
     const res2 = await request(app).get('/wallet/fetch').send({ email: 'matias@hola.cl', phone })
+    expect(res2.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
     expect(res2.body.status).toBe(401)
     expect(res2.body.success).toBe(false)
-    expect(res2.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
   })
 
   it('should fetch the wallet correctly', async () => {
