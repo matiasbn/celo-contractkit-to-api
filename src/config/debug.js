@@ -9,7 +9,7 @@ const debugRoutes = debug('pipol::routes')
 const debugControllers = debug('pipol::controllers')
 const debugAgenda = debug('pipol::agenda')
 const debugWorkers = debug('pipol::workers')
-const debugTest = debug('pipol::test')
+const debugTest = debug('pipoltest::test')
 
 export {
   debugMongo,
