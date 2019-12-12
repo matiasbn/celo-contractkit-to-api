@@ -7,6 +7,8 @@ const debugExpress = debug('demo::express')
 const debugStart = debug('demo::app::start')
 const debugRoutes = debug('demo::app::routes')
 const debugControllers = debug('demo::app::controllers')
+const debugAgenda = debug('demo::agenda')
+const debugWorkers = debug('demo::workers')
 const debugTest = debug('demotest::test')
 
 export {
@@ -16,4 +18,6 @@ export {
   debugRoutes,
   debugControllers,
   debugTest,
+  debugAgenda,
+  debugWorkers,
 }

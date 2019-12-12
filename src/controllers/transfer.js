@@ -1,17 +1,12 @@
 /* eslint-disable max-len */
-import { newKit } from '@celo/contractkit'
 import { debugControllers } from '../config/debug'
 import PrivateKey from '../models/private-key'
 import ERROR_MESSAGES from '../common/error-messages'
-
-// Create kit
-const kit = newKit('https://alfajores-forno.celo-testnet.org/')
-const { web3 } = kit
+import WORKER_NAMES from '../common/worker-names'
+import { enqueueJob } from '../config/agenda'
 
 
 const transferCUSD = async (request, response) => {
-  // const goldtoken = await kit.contracts.getGoldToken()
-  const stableToken = await kit.contracts.getStableToken()
   try {
     debugControllers(request.body)
     const {
@@ -23,30 +18,15 @@ const transferCUSD = async (request, response) => {
       response.error(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED, 401)
     } else {
       const { privateKey, address } = privKey
-      const resp = { privateKey, address }
-      // Clean the wallets before execute transaction
-      web3.eth.accounts.wallet.clear()
-      kit.addAccount(privateKey)
-      kit.defaultAccount = address
-      const ether = kit.web3.utils.toWei(amount, 'ether')
-      const tx = await stableToken.transfer(toAddress, ether).send({
-        from: address,
-      })
-      const hash = await tx.getHash()
-      const receipt = await tx.waitReceipt()
-      debugControllers('Gold Transfer. hash: %s. Receipt: %O', hash, receipt)
-      // Clean the wallets after execute transaction
-      web3.eth.accounts.wallet.clear()
-      debugControllers(resp)
-      response.success(resp)
+      const parameters = {
+        privateKey, address, toAddress, amount,
+      }
+      await enqueueJob(parameters, WORKER_NAMES.TRANSFER_CUSD)
+      response.success(privKey)
     }
   } catch (error) {
     debugControllers(error)
     response.error(error, 500)
-  } finally {
-    if (typeof kit.web3.currentProvider.stop === 'function') {
-      kit.web3.currentProvider.stop()
-    }
   }
 }
 
