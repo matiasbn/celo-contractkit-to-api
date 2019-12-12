@@ -1,6 +1,5 @@
+/* eslint-disable prefer-destructuring */
 import path from 'path'
-import kit from '~/src/config/kit'
-import debugTest from '../../src/config/debug'
 import Controller from '../../src/controllers/balance'
 import Wallet from '../../src/controllers/wallet'
 import PrivateKey from '../../src/models/private-key'

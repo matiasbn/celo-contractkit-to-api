@@ -55,7 +55,6 @@ describe('create wallet route integration testing', () => {
     expect(res2.body.message.email).toBe(ERROR_MESSAGES.EMAIL_IS_EMPTY)
   })
 
-
   it('should throw 422 if email or phone does not have the correct format', async () => {
     // With badly formatted phone number
     const badNumber = '+569827645367381765'
@@ -79,15 +78,15 @@ describe('create wallet route integration testing', () => {
   it('should throw 401 if email or phone is already registered', async () => {
     // Registered email
     const res = await request(app).post('/wallet/create').send({ email, phone: '+56986698244' })
+    expect(res.body.message).toBe(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED)
     expect(res.body.status).toBe(401)
     expect(res.body.success).toBe(false)
-    expect(res.body.message).toBe(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED)
 
     // Registered phone
     const res2 = await request(app).post('/wallet/create').send({ email: 'matias@hola.cl', phone })
+    expect(res2.body.message).toBe(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED)
     expect(res2.body.status).toBe(401)
     expect(res2.body.success).toBe(false)
-    expect(res2.body.message).toBe(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED)
   })
 
   it('should create the wallet correctly', async () => {

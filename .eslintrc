@@ -1,7 +1,6 @@
 {
   "extends": [
-    "airbnb-base",
-    // "plugin:unicorn/recommended"
+    "airbnb-base"
   ],
   "plugins": ["promise","import"],
   "rules": {
@@ -11,7 +10,8 @@
     "no-async-promise-executor": 0
   },
   "env": {
-    "node": true
+    "node": true,
+    "jest": true
   },
   "parser": "babel-eslint",
   "parserOptions": {

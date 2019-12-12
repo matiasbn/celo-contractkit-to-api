@@ -1,5 +1,5 @@
+/* eslint-disable prefer-destructuring */
 import path from 'path'
-import { debugTest } from '../../src/config/debug'
 import Controller from '../../src/controllers/wallet'
 import PrivateKey from '../../src/models/private-key'
 import ERROR_MESSAGES from '../../src/common/error-messages'
@@ -78,8 +78,8 @@ describe('wallet controller unit testing', () => {
     })
 
     it('should return an object with email, phone and address fields when registering', async () => {
-      const req = mockRequest({ body: { email: 'matias', phone: '1234' } })
-      const res = mockResponse()
+      req = mockRequest({ body: { email: 'matias', phone: '1234' } })
+      res = mockResponse()
       await Controller.createWallet(req, res)
       const response = res.success.mock.calls[0][0]
       expect(response.email).toBe('matias')
@@ -89,8 +89,6 @@ describe('wallet controller unit testing', () => {
   })
 
   describe('fetchWallet unit tests', () => {
-    let req
-    let res
     beforeEach(async () => {
       await PrivateKey.deleteMany({})
       req = mockRequest({ body: { email, phone } })
