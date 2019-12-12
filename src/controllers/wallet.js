@@ -1,34 +1,31 @@
 /* eslint-disable max-len */
-import { newKit } from '@celo/contractkit'
+import kit from '../config/kit'
 import { debugControllers } from '../config/debug'
 import PrivateKey from '../models/private-key'
 import ERROR_MESSAGES from '../common/error-messages'
 
 const keySize = Number(process.env.KEY_SIZE)
-// Create kit
-const kit = newKit('https://alfajores-forno.celo-testnet.org/')
-const { web3 } = kit
 
 const createWallet = async (request, response) => {
   try {
     debugControllers(request.body)
     const { email, phone } = request.body
     // Create crypto key for AES
-    // const crypto = (web3.utils.randomHex(keySize)).replace('0x', '')
+    // const crypto = (kit.web3.utils.randomHex(keySize)).replace('0x', '')
 
     // Create random seed for wallet
-    const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
+    const randomSeed = (kit.web3.utils.randomHex(keySize)).replace('0x', '')
     debugControllers(randomSeed)
 
     // Create wallet
-    const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
+    const wallet = kit.web3.eth.accounts.wallet.create(1, randomSeed)
 
     // Encrypt and store wallet
     const { address, privateKey } = wallet['0']
     debugControllers(privateKey)
 
     // Clear wallets
-    web3.eth.accounts.wallet.clear()
+    kit.web3.eth.accounts.wallet.clear()
 
     const privateKeys = await PrivateKey.find({ $or: [{ email }, { phone }] })
     debugControllers(privateKeys)
@@ -93,18 +90,18 @@ const updateWallet = async (request, response) => {
   try {
     const { email, phone } = request.body
     // Create random seed for wallet
-    const randomSeed = (web3.utils.randomHex(keySize)).replace('0x', '')
+    const randomSeed = (kit.web3.utils.randomHex(keySize)).replace('0x', '')
     debugControllers(randomSeed)
 
     // Create wallet
-    const wallet = web3.eth.accounts.wallet.create(1, randomSeed)
+    const wallet = kit.web3.eth.accounts.wallet.create(1, randomSeed)
 
     // Encrypt and store wallet
     const { address, privateKey: newPrivateKey } = wallet['0']
     debugControllers(newPrivateKey)
 
     // Clear wallets
-    web3.eth.accounts.wallet.clear()
+    kit.web3.eth.accounts.wallet.clear()
 
     // Update wallet
     const newWallet = { address, privateKey: newPrivateKey }
