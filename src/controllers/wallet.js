@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import kit from '../config/kit'
+import { newKit } from '@celo/contractkit'
 import { debugControllers } from '../config/debug'
 import PrivateKey from '../models/private-key'
 import ERROR_MESSAGES from '../common/error-messages'
@@ -7,6 +7,7 @@ import ERROR_MESSAGES from '../common/error-messages'
 const keySize = Number(process.env.KEY_SIZE)
 
 const createWallet = async (request, response) => {
+  const kit = newKit(process.env.CELO_URL)
   try {
     debugControllers(request.body)
     const { email, phone } = request.body
@@ -24,14 +25,12 @@ const createWallet = async (request, response) => {
     const { address, privateKey } = wallet['0']
     debugControllers(privateKey)
 
-    // Clear wallets
-    kit.web3.eth.accounts.wallet.clear()
-
     const privateKeys = await PrivateKey.find({ $or: [{ email }, { phone }] })
     debugControllers(privateKeys)
     if (privateKeys.length > 0) {
       response.error(ERROR_MESSAGES.EMAIL_OR_PHONE_ALREADY_REGISTERED, 401)
     } else {
+      // @todo save the key as a encrypted string
       const state = new PrivateKey({
         email, privateKey, phone, address,
       })
@@ -43,6 +42,10 @@ const createWallet = async (request, response) => {
   } catch (error) {
     debugControllers(error)
     response.error(error, 500)
+  } finally {
+    if (typeof kit.web3.currentProvider.stop === 'function') {
+      kit.web3.currentProvider.stop()
+    }
   }
 }
 
@@ -87,6 +90,7 @@ const deleteWallet = async (request, response) => {
 }
 
 const updateWallet = async (request, response) => {
+  const kit = newKit(process.env.CELO_URL)
   try {
     const { email, phone } = request.body
     // Create random seed for wallet
@@ -99,9 +103,6 @@ const updateWallet = async (request, response) => {
     // Encrypt and store wallet
     const { address, privateKey: newPrivateKey } = wallet['0']
     debugControllers(newPrivateKey)
-
-    // Clear wallets
-    kit.web3.eth.accounts.wallet.clear()
 
     // Update wallet
     const newWallet = { address, privateKey: newPrivateKey }
@@ -121,9 +122,12 @@ const updateWallet = async (request, response) => {
   } catch (error) {
     debugControllers(error)
     response.error(error, 500)
+  } finally {
+    if (typeof kit.web3.currentProvider.stop === 'function') {
+      kit.web3.currentProvider.stop()
+    }
   }
 }
-
 
 export default {
   createWallet,

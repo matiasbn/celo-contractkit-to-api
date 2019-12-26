@@ -1,13 +1,13 @@
 /* eslint-disable no-return-assign */
 import { validationResult } from 'express-validator'
 
-const validate = (req, res, next) => {
-  const errors = validationResult(req)
+const validate = (request, res, next) => {
+  const errors = validationResult(request)
   if (errors.isEmpty()) {
     return next()
   }
   const extractedErrors = {}
-  errors.array().forEach((err) => extractedErrors[err.param] = err.msg)
+  errors.array().forEach((error) => extractedErrors[error.param] = error.msg)
 
   return res.error({ ...extractedErrors }, 422)
 }

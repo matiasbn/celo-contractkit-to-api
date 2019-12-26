@@ -3,6 +3,7 @@ const ERROR_MESSAGES = {
   AMOUNT_IS_NOT_NUMBER: 'amount is not a number. Use dot (.) as separator',
   EMAIL_IS_EMPTY: 'email cannot be empty',
   EMAIL_OR_PHONE_ALREADY_REGISTERED: 'email or phone already registered with a private key',
+  INSUFFICIENT_FUNDS: 'wallet with insufficient funds',
   IS_NOT_EMAIL: 'email with bad format',
   IS_NOT_PHONE: 'phone with bad format',
   IS_NOT_CHECKSUM_ADDRESS: 'given address is not checksum address',

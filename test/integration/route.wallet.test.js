@@ -1,17 +1,18 @@
 import path from 'path'
-import web3 from 'web3-utils'
 import isE164 from 'is-e164-phone-number'
 import isEmail from 'validator/lib/isEmail'
 import request from 'supertest'
+import { newKit } from '@celo/contractkit'
 import PrivateKey from '../../src/models/private-key'
 import app from '../../src/config/express'
 import ERROR_MESSAGES from '../../src/common/error-messages'
-import TEST_ERROR_MESSAGES from '../common/error-messages'
 import MongoClient from '../../src/config/db'
 import { debugTest } from '../../src/config/debug'
+import TEST_ERROR_MESSAGES from '../common/error-messages'
 import getTestConfig from '../helpers/get-test-options'
 import Logger from '~/src/config/logger'
 
+const kit = newKit(process.env.CELO_URL)
 const funded = {
   email: 'matias@gmail.com',
   phone: '+56986698243',
@@ -39,6 +40,12 @@ describe('create wallet route integration testing', () => {
       phone = fundedAccount.phone
     } catch (error) {
       debugTest(error)
+    }
+  })
+
+  afterAll(async () => {
+    if (typeof kit.web3.currentProvider.stop === 'function') {
+      kit.web3.currentProvider.stop()
     }
   })
   it('should throw 422 if email or phone are not present on the request body', async () => {
@@ -99,7 +106,7 @@ describe('create wallet route integration testing', () => {
     expect(res.body.phone).toBe(newPhone)
     // check if is a checksum address
     expect(res.body.address).toBeDefined()
-    expect(web3.checkAddressChecksum(res.body.address)).toBe(true)
+    expect(kit.web3.utils.checkAddressChecksum(res.body.address)).toBe(true)
   })
 })
 
@@ -133,7 +140,6 @@ describe('fetch wallet route integration testing', () => {
     expect(res2.body.success).toBe(false)
     expect(res2.body.message.email).toBe(ERROR_MESSAGES.EMAIL_IS_EMPTY)
   })
-
 
   it('should throw 422 if email or phone does not have the correct format', async () => {
     // With badly formatted phone number

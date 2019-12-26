@@ -1,9 +1,18 @@
 /* eslint-disable newline-per-chained-call */
-import web3 from 'web3-utils'
 import { body } from 'express-validator'
+import { newKit } from '@celo/contractkit'
 import ERROR_MESSAGES from '../common/error-messages'
 
-const isChecksumAddress = (address) => web3.checkAddressChecksum(address)
+const isChecksumAddress = (address) => {
+  const kit = newKit(process.env.CELO_URL)
+  try {
+    return kit.web3.utils.checkAddressChecksum(address)
+  } finally {
+    if (typeof kit.web3.currentProvider.stop === 'function') {
+      kit.web3.currentProvider.stop()
+    }
+  }
+}
 
 const checkBody = [
   body('email').exists().withMessage(ERROR_MESSAGES.EMAIL_IS_EMPTY).bail(),

@@ -34,7 +34,7 @@ class MongoClient {
       debugTest('Mongodb connected')
       if (app) {
         const server = http.createServer(app)
-        debugMongo('Starting Express Server...')
+        debugExpress('Starting Express Server...')
         debugTest('Starting Express Server...')
         server.listen(this.expressPort, () => {
           debugExpress(`Server running on port: ${this.expressPort}`)

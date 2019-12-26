@@ -10,6 +10,11 @@ const TEST_CONFIG = [
     drop: true,
   },
   {
+    databaseName: 'test-route-transfer',
+    appPort: 3009,
+    drop: true,
+  },
+  {
     databaseName: 'test-controller-balance',
     appPort: null,
     drop: true,
@@ -20,7 +25,7 @@ const TEST_CONFIG = [
     drop: true,
   },
   {
-    databaseName: 'test-worker-wallet',
+    databaseName: 'test-worker-transfer',
     appPort: null,
     drop: true,
   },

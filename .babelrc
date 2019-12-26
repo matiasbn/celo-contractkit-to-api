@@ -1,11 +1,11 @@
 {
   "presets": [
-    "@babel/preset-env"
+    "@babel/env"
   ],
   "plugins": [
     "add-module-exports",
-    "@babel/plugin-transform-runtime",
-    ["babel-plugin-root-import"]
+    "@babel/transform-runtime",
+    "root-import"
   ],
   "sourceMaps": true,
   "retainLines": true

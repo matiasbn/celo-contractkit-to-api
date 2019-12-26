@@ -7,7 +7,7 @@ const debugExpress = debug('pipol::express')
 const debugStart = debug('pipol::start')
 const debugRoutes = debug('pipol::routes')
 const debugControllers = debug('pipol::controllers')
-const debugAgenda = debug('pipol::agenda')
+const debugBull = debug('pipol::bull')
 const debugWorkers = debug('pipol::workers')
 const debugTest = debug('pipoltest::test')
 
@@ -18,6 +18,6 @@ export {
   debugRoutes,
   debugControllers,
   debugTest,
-  debugAgenda,
+  debugBull,
   debugWorkers,
 }
