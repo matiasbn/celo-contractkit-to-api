@@ -13,6 +13,7 @@ const queueOptions = {
     host: process.env.REDIS_HOST,
   },
 }
+
 const parseMessage = (parameters) => {
   const parsedMessage = []
   if (parameters.jobType) parsedMessage.push(`[TYPE:${parameters.jobType}]`)
@@ -53,8 +54,14 @@ const executeJob = async (job, done) => {
 
 const createQueue = (queueName) => {
   const queue = new Queue(queueName, queueOptions)
+  /**
+ * @description state the process for the queue
+ */
   queue.process(queueConcurrency, (job, done) => executeJob(job, done))
 
+  /**
+   * @description set the action for the different job states
+   */
   queue.on('active', (job) => {
     const parsedMessage = `[STARTED]-${parseMessage(job.data.parameters)}`
     Logger.info(parsedMessage)
@@ -74,6 +81,8 @@ const createQueue = (queueName) => {
     Logger.error(error)
     await job.remove()
   })
+
+
   async function graceful() {
     await queue.close()
     process.exit(0)
@@ -88,11 +97,12 @@ const createQueue = (queueName) => {
 const enqueueJob = async (parameters) => {
   try {
     const { address } = parameters
+    // Create a queue for every address to avoid losing track of the nonce
     const queueJobCount = await Queue(address).getJobCounts()
     const isOldQueue = Object.values(queueJobCount).some((value) => value > 0)
     const queue = isOldQueue ? Queue(address) : createQueue(address)
+    debugBull('bull job parameters: \n', parameters)
     queue.add({ parameters })
-    debugBull(parameters)
   } catch (error) {
     Logger.error(error)
   }

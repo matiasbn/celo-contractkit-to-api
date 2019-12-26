@@ -1,4 +1,5 @@
 const ERROR_MESSAGES = {
+  ADDRESS_IS_EMPTY: 'address cannot be empty',
   AMOUNT_IS_EMPTY: 'amount cannot be empty',
   AMOUNT_IS_NOT_NUMBER: 'amount is not a number. Use dot (.) as separator',
   EMAIL_IS_EMPTY: 'email cannot be empty',

@@ -12,7 +12,7 @@ const usdBalance = async (address) => {
     const balance = await stabletoken.balanceOf(address)
     return balance
   } catch (error) {
-    Logger(error)
+    Logger.error(error)
   } finally {
     if (typeof kit.web3.currentProvider.stop === 'function') {
       kit.web3.currentProvider.stop()

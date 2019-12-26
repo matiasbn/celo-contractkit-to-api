@@ -19,7 +19,7 @@ const cUSD = (privateKey, address, toAddress, amount) => new Promise(async (reso
     const transaction = await kit.web3.eth.getTransaction(txHash)
     const { nonce } = transaction
     const storedTransaction = await Transaction.create({ address, nonce, txHash })
-    debugWorkers(storedTransaction)
+    debugWorkers('stored transaction:\n ', storedTransaction)
     resolve(storedTransaction)
   } catch (error) {
     reject(error)

@@ -11,36 +11,33 @@ import usdBalance from '~/src/helpers/get-usd-balance'
 
 const transferCUSD = async (request, response) => {
   try {
-    debugControllers(request.body)
+    debugControllers('request body: \n', request.body)
     const {
-      email, phone, toAddress, amount,
+      address, toAddress, amount,
     } = request.body
-    const privKey = await PrivateKey.findOne({ email, phone }, { _id: 0, address: 1, privateKey: 1 }).lean()
-    debugControllers(privKey)
-    if (!privKey) {
+    const { privateKey } = await PrivateKey.findOne({ address }, { _id: 0, privateKey: 1 }).lean()
+    debugControllers('privateKey:', privateKey)
+    if (!privateKey) {
       response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
     } else {
-      const { privateKey, address } = privKey
       const balance = await usdBalance(address)
       if (balance.toNumber() < amount) {
-        response.error(ERROR_MESSAGES.INSUFFICIENT_FUNDS, 401)
+        response.error({ message: ERROR_MESSAGES.INSUFFICIENT_FUNDS, balance: balance.toNumber().toString(), amount }, 401)
       } else {
         const date = Date.now()
         const emitHash = getSha256([address, date, WORKER_NAMES.TRANSFER_CUSD])
-        debugControllers(emitHash)
+        debugControllers('emithHash:', emitHash)
         const parameters = {
           privateKey,
           address,
           toAddress,
           amount,
           emitHash,
-          email,
-          phone,
           jobType: WORKER_NAMES.TRANSFER_CUSD,
         }
         await enqueueJob(parameters)
         emitter.on(emitHash, (resp) => {
-          debugControllers(resp)
+          debugControllers('job response: \n', resp)
           const { success } = resp
           delete resp.success
           if (success) {
