@@ -43,6 +43,9 @@ const executeJob = async (job, done) => {
       case WORKER_NAMES.TRANSFER_CUSD:
         await Transfer.cUSD(privateKey, address, toAddress, amount)
         break
+      case WORKER_NAMES.TRANSFER_CGLD:
+        await Transfer.cGLD(privateKey, address, toAddress, amount)
+        break
       default:
         break
     }
@@ -98,10 +101,11 @@ const enqueueJob = async (parameters) => {
   try {
     const { address } = parameters
     // Create a queue for every address to avoid losing track of the nonce
+    debugBull('bull job parameters: \n', parameters)
     const queueJobCount = await Queue(address).getJobCounts()
+    debugBull('queue job count: \n', queueJobCount)
     const isOldQueue = Object.values(queueJobCount).some((value) => value > 0)
     const queue = isOldQueue ? Queue(address) : createQueue(address)
-    debugBull('bull job parameters: \n', parameters)
     queue.add({ parameters })
   } catch (error) {
     Logger.error(error)

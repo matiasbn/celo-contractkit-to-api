@@ -13,11 +13,11 @@ router.post('/cusd',
   validator,
   Controller.transferCUSD)
 
-// router.post('/transfer/cgld',
-//   trimRequest.all,
-//   validation.checkFormat,
-//   validation.checkBody,
-//   validator,
-//   Controller.getGLDBalance)
+router.post('/cgld',
+  trimRequest.all,
+  validation.checkFormat,
+  validation.checkBody,
+  validator,
+  Controller.transferCGLD)
 
 export default router
