@@ -17,7 +17,6 @@ const queueOptions = {
 const parseMessage = (parameters) => {
   const parsedMessage = []
   if (parameters.jobType) parsedMessage.push(`[TYPE:${parameters.jobType}]`)
-  if (parameters.email) parsedMessage.push(`[EMAIL:${parameters.email}]`)
   if (parameters.phone) parsedMessage.push(`[PHONE:${parameters.phone}]`)
   if (parameters.address) parsedMessage.push(`[ADDRESS:${parameters.address}]`)
   if (parameters.toAddress) parsedMessage.push(`[TO:${parameters.toAddress}]`)

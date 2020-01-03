@@ -1,6 +1,5 @@
 import path from 'path'
 import isE164 from 'is-e164-phone-number'
-import isEmail from 'validator/lib/isEmail'
 import isDecimal from 'validator/lib/isDecimal'
 import request from 'supertest'
 import { newKit } from '@celo/contractkit'
@@ -23,14 +22,12 @@ import Logger from '~/src/config/logger'
 
 const kit = newKit(process.env.CELO_URL)
 const funded = {
-  email: 'matias@gmail.com',
   phone: '+56986698243',
   address: '0x6a0ebFF8C9154aB69631B86234374aE952a66032',
   privateKey: '0xb4f5a86d5e7327c8b1a7b33d63324f0e7d6005626882d67cb1e3a5812f9ba0b8',
 }
 
 const empty = {
-  email: 'matias.barriosn@gmail.com',
   privateKey: '0x4934c1976005bd28dbe97c756ef15416be91da444553d2ab1564dd8d506a7351',
   phone: '+56986698242',
   address: '0xD0aC2e3A87EB8113Ed07a5242E9F6fB9d79569b1',
@@ -64,31 +61,17 @@ describe('transfer cUSD route integration testing', () => {
   it('[route/transfer/cusd/1] should throw 422 if any parameter of the body is not present', async () => {
     // Without phone
     let body = {
-      // email: fundedAccount.email,
-      phone: fundedAccount.phone,
-      toAddress: emptyAccount.address,
-      amount: '0.001',
-    }
-    let res = await request(app).post('/transfer/cusd').send(body)
-    expect(res.body.message.email).toBe(ERROR_MESSAGES.EMAIL_IS_EMPTY)
-    expect(res.body.status).toBe(422)
-    expect(res.body.success).toBe(false)
-
-    // Without email
-    body = {
-      email: fundedAccount.email,
       // phone: fundedAccount.phone,
       toAddress: emptyAccount.address,
       amount: '0.001',
     }
-    res = await request(app).post('/transfer/cusd').send(body)
+    let res = await request(app).post('/transfer/cusd').send(body)
     expect(res.body.message.phone).toBe(ERROR_MESSAGES.PHONE_IS_EMPTY)
     expect(res.body.status).toBe(422)
     expect(res.body.success).toBe(false)
 
     // Without toAddress
     body = {
-      email: fundedAccount.email,
       phone: fundedAccount.phone,
       // toAddress: emptyAccount.address,
       amount: '0.001',
@@ -100,7 +83,6 @@ describe('transfer cUSD route integration testing', () => {
 
     // Without amount
     body = {
-      email: fundedAccount.email,
       phone: fundedAccount.phone,
       toAddress: emptyAccount.address,
       // amount: '0.001',
@@ -112,7 +94,6 @@ describe('transfer cUSD route integration testing', () => {
   })
   it('[route/transfer/cusd/2] should throw 422 if any parameter is incorrect', async () => {
     let body = {
-      email: fundedAccount.email,
       phone: '+569827645367381765',
       toAddress: emptyAccount.address,
       amount: '0.001',
@@ -125,23 +106,8 @@ describe('transfer cUSD route integration testing', () => {
     expect(res.body.success).toBe(false)
     expect(res.body.message.phone).toBe(ERROR_MESSAGES.IS_NOT_PHONE)
 
-    // With badly formatted email
-    body = {
-      email: 'matias@hola',
-      phone: fundedAccount.phone,
-      toAddress: emptyAccount.address,
-      amount: '0.001',
-    }
-    hasCorrectFormat = isEmail(body.email)
-    expect(hasCorrectFormat).toBe(false)
-    res = await request(app).post('/transfer/cusd').send(body)
-    expect(res.body.status).toBe(422)
-    expect(res.body.success).toBe(false)
-    expect(res.body.message.email).toBe(ERROR_MESSAGES.IS_NOT_EMAIL)
-
     // With badly formatted address
     body = {
-      email: fundedAccount.email,
       phone: fundedAccount.phone,
       toAddress: `${emptyAccount.address}G`, // G is not an accepted character
       amount: '0.001',
@@ -155,7 +121,6 @@ describe('transfer cUSD route integration testing', () => {
 
     // With badly formatted amount
     body = {
-      email: fundedAccount.email,
       phone: fundedAccount.phone,
       toAddress: emptyAccount.address,
       amount: '0,001', // comma (,) is not accepted, it must be a dot (.)
@@ -171,20 +136,8 @@ describe('transfer cUSD route integration testing', () => {
   /**
     * @description Check the controller working as expected
     */
-  it('[route/transfer/cusd/3] should throw 401 if email-phone pair is not found', async () => {
-    let body = {
-      email: 'matias@asd.com',
-      phone: fundedAccount.phone,
-      toAddress: emptyAccount.address,
-      amount: '0.001',
-    }
-    const res = await request(app).post('/transfer/cusd').send(body)
-    expect(res.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
-    expect(res.body.status).toBe(401)
-    expect(res.body.success).toBe(false)
-
-    body = {
-      email: fundedAccount.email,
+  it('[route/transfer/cusd/3] should throw 401 if phone pair is not found', async () => {
+    const body = {
       phone: '+56986698245',
       toAddress: emptyAccount.address,
       amount: '0.001',
@@ -198,7 +151,6 @@ describe('transfer cUSD route integration testing', () => {
   it('[route/transfer/cusd/4] should throw 401 if given account has not funds', async () => {
     // Empty account
     const body = {
-      email: emptyAccount.email,
       phone: emptyAccount.phone,
       toAddress: receiverAddress,
       amount: '0.001',
@@ -209,17 +161,5 @@ describe('transfer cUSD route integration testing', () => {
     expect(res.body.message).toBe(ERROR_MESSAGES.INSUFFICIENT_FUNDS)
     expect(res.body.status).toBe(401)
     expect(res.body.success).toBe(false)
-
-    // body = {
-    //   email: fundedAccount.email,
-    //   phone: '+56986698245',
-    //   toAddress: emptyAccount.address,
-    //   amount: '0.001',
-    // }
-    // // With non-existing email
-    // const res2 = await request(app).post('/transfer/cusd').send(body)
-    // expect(res2.body.message).toBe(ERROR_MESSAGES.WALLET_NOT_FOUND)
-    // expect(res2.body.status).toBe(401)
-    // expect(res2.body.success).toBe(false)
   })
 })

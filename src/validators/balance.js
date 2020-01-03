@@ -10,7 +10,7 @@ const checkBody = [
 ]
 
 const checkFormat = [
-  body('address').trim().custom((address) => isChecksumAddress(address)).withMessage(ERROR_MESSAGES.IS_NOT_EMAIL),
+  body('address').trim().custom((address) => isChecksumAddress(address)).withMessage(ERROR_MESSAGES.IS_NOT_CHECKSUM_ADDRESS),
 ]
 
 

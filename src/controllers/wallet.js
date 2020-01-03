@@ -65,14 +65,13 @@ const fetchWallet = async (request, response) => {
 
 const deleteWallet = async (request, response) => {
   try {
-    const { email, phone } = request.body
-    const deletedKey = await PrivateKey.findOneAndDelete({ email, phone }).lean()
+    const { phone } = request.body
+    const deletedKey = await PrivateKey.findOneAndDelete({ phone }).lean()
     debugControllers('PrivateKey collection result: \n', deletedKey)
     if (!deletedKey) {
       response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
     } else {
       const resp = {
-        email: deletedKey.email,
         phone: deletedKey.phone,
         address: deletedKey.address,
       }
@@ -109,7 +108,6 @@ const updateWallet = async (request, response) => {
     } else {
       const resp = {
         address,
-        email: updatedKey.email,
         phone: updatedKey.phone,
       }
       debugControllers('response to client:', resp)

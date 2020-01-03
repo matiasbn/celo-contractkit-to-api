@@ -23,14 +23,12 @@ import Logger from '~/src/config/logger'
 
 // Set the funded account to be stored
 const funded = {
-  email: 'matias@gmail.com',
   phone: '+56986698243',
   address: '0x6a0ebFF8C9154aB69631B86234374aE952a66032',
   privateKey:
       '0xb4f5a86d5e7327c8b1a7b33d63324f0e7d6005626882d67cb1e3a5812f9ba0b8',
 }
 
-const email = 'matias.barriosn@gmail.com'
 const phone = '+56986673341'
 let req
 let res
@@ -39,10 +37,10 @@ let emptyWallet
 describe('balance controller unit testing', () => {
   beforeEach(async () => {
     await PrivateKey.deleteMany({})
-    req = mockRequest({ body: { email, phone } })
+    req = mockRequest({ body: { phone } })
     res = mockResponse()
     await Wallet.createWallet(req, mockResponse())
-    emptyWallet = await PrivateKey.findOne({ email, phone })
+    emptyWallet = await PrivateKey.findOne({ phone })
     await PrivateKey.create(funded)
   })
 
@@ -57,7 +55,7 @@ describe('balance controller unit testing', () => {
       expect(stringBalance).toBe(balanceController)
 
       // try with funded wallet
-      req = mockRequest({ body: { email: funded.email, phone: funded.phone } })
+      req = mockRequest({ body: { phone: funded.phone } })
       res = mockResponse()
       balance = await usdBalance(funded.address)
       stringBalance = balance.toString()
@@ -68,22 +66,14 @@ describe('balance controller unit testing', () => {
       expect(stringBalance).toBe(balanceController)
     })
 
-    it('should return 401 if there is no private key for email-phone pair', async () => {
-      // try with wrong email
-      req = mockRequest({ body: { email: 'email.falso@gmail.com', phone } })
-      res = mockResponse()
-      await Controller.getUSDBalance(req, res)
-      let response = res.error.mock.calls[0]
-      expect(response[1]).toBe(401)
-      expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+    it('should return 401 if there is no private key for phone', async () => {
       // try with wrong phone
-      req = mockRequest({ body: { email, phone: '+56986698244' } })
+      req = mockRequest({ body: { phone: '+56986698244' } })
       res = mockResponse()
       await Controller.getUSDBalance(req, res)
-      response = res.error.mock.calls[0]
+      const response = res.error.mock.calls[0]
       expect(response[1]).toBe(401)
       expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
-      response = 0
     })
   })
 
@@ -98,7 +88,7 @@ describe('balance controller unit testing', () => {
       expect(stringBalance).toBe(balanceController)
 
       // try with funded wallet
-      req = mockRequest({ body: { email: funded.email, phone: funded.phone } })
+      req = mockRequest({ body: { phone: funded.phone } })
       res = mockResponse()
       balance = await gldBalance(funded.address)
       stringBalance = balance.toString()
@@ -109,22 +99,14 @@ describe('balance controller unit testing', () => {
       expect(stringBalance).toBe(balanceController)
     })
 
-    it('should return 401 if there is no private key for email-phone pair', async () => {
-      // try with wrong email
-      req = mockRequest({ body: { email: 'email.falso@gmail.com', phone } })
-      res = mockResponse()
-      await Controller.getGLDBalance(req, res)
-      let response = res.error.mock.calls[0]
-      expect(response[1]).toBe(401)
-      expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
+    it('should return 401 if there is no private key for phone', async () => {
       // try with wrong phone
-      req = mockRequest({ body: { email, phone: '+56986698244' } })
+      req = mockRequest({ body: { phone: '+56986698244' } })
       res = mockResponse()
       await Controller.getGLDBalance(req, res)
-      response = res.error.mock.calls[0]
+      const response = res.error.mock.calls[0]
       expect(response[1]).toBe(401)
       expect(response[0]).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
-      response = 0
     })
   })
 })
