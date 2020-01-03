@@ -1,5 +1,5 @@
 import path from 'path'
-import isE164 from 'is-e164-phone-number'
+import utils from 'web3-utils'
 import request from 'supertest'
 import PrivateKey from '../../src/models/private-key'
 import app from '../../src/config/express'
@@ -28,55 +28,46 @@ const funded = {
 })()
 
 describe('cUSD balance route integration testing', () => {
-  let phone
   let address
 
   beforeEach(async () => {
     try {
       await PrivateKey.deleteMany({})
       const fundedAccount = await PrivateKey.create(funded)
-      phone = fundedAccount.phone
       address = fundedAccount.address
     } catch (error) {
       debugTest(error)
     }
   })
-  it('should throw 422 if phone are not present on the request body', async () => {
-    // Without phone
+  it('[route/balance/cusd/1] should throw 422 if address is not present on the request body', async () => {
+    // Without address
     const res = await request(app).get('/balance/cusd').send({ })
     expect(res.body.status).toBe(422)
     expect(res.body.success).toBe(false)
-    expect(res.body.message.phone).toBe(ERROR_MESSAGES.PHONE_IS_EMPTY)
+    expect(res.body.message.address).toBe(ERROR_MESSAGES.ADDRESS_IS_EMPTY)
   })
 
-  it('should throw 422 if phone does not have the correct format', async () => {
+  it('[route/balance/cusd/2] should throw 422 if address does not have the correct format', async () => {
     // With badly formatted phone number
-    const badNumber = '+569827645367381765'
-    const hasCorrectFormat = isE164(badNumber)
+    const badAddress = `${funded.address}G`
+    const hasCorrectFormat = utils.checkAddressChecksum(badAddress)
     expect(hasCorrectFormat).toBe(false)
-    const res = await request(app).get('/balance/cusd').send({ phone: badNumber })
+    const res = await request(app).get('/balance/cusd').send({ address: badAddress })
     expect(res.body.status).toBe(422)
     expect(res.body.success).toBe(false)
-    expect(res.body.message.phone).toBe(ERROR_MESSAGES.IS_NOT_PHONE)
+    expect(res.body.message.address).toBe(ERROR_MESSAGES.IS_NOT_CHECKSUM_ADDRESS)
   })
 
-  it('should throw 401 if phone pair is not found', async () => {
-    // With unexisting phone
-    const res = await request(app).get('/balance/cusd').send({ phone: '+56986698244' })
-    expect(res.body.status).toBe(401)
-    expect(res.body.success).toBe(false)
-    expect(res.body.message).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
-  })
-
-  it('should get cUSD balance correctly', async () => {
+  it('[route/balance/cusd/3] should get cUSD balance correctly', async () => {
     // Should use an existing account with funds
-    const res = await request(app).get('/balance/cusd').send({ phone })
+    const res = await request(app).get('/balance/cusd').send({ address })
     const correctBalance = await usdBalance(address)
     const { balance, status, success } = res.body
     expect(balance).not.toBe('0')
     expect(status).toBe(200)
     expect(success).toBe(true)
-    expect(balance).toBe(correctBalance.toString())
+    // should get balance in 'dollars', not in wei
+    expect(balance).toBe(utils.fromWei(correctBalance.toString()))
   })
 })
 
@@ -91,41 +82,34 @@ describe('cGLD balance route integration testing', () => {
     address = fundedAccount.address
   })
 
-  it('should throw 422 if phone are not present on the request body', async () => {
-    // Without phone
+  it('[route/balance/cgld/1] should throw 422 if address are not present on the request body', async () => {
+    // Without address
     const res = await request(app).get('/balance/cgld').send({ })
     expect(res.body.status).toBe(422)
     expect(res.body.success).toBe(false)
-    expect(res.body.message.phone).toBe(ERROR_MESSAGES.PHONE_IS_EMPTY)
+    expect(res.body.message.address).toBe(ERROR_MESSAGES.ADDRESS_IS_EMPTY)
   })
 
-  it('should throw 422 if phone does not have the correct format', async () => {
-    // With badly formatted phone number
-    const badNumber = '+569827645367381765'
-    const hasCorrectFormat = isE164(badNumber)
+  it('[route/balance/cgld/2] should throw 422 if address does not have the correct format', async () => {
+    // With badly formatted address
+    const badAddress = `${funded.address}G`
+    const hasCorrectFormat = utils.checkAddressChecksum(badAddress)
     expect(hasCorrectFormat).toBe(false)
-    const res = await request(app).get('/balance/cgld').send({ phone: badNumber })
+    const res = await request(app).get('/balance/cgld').send({ address: badAddress })
     expect(res.body.status).toBe(422)
     expect(res.body.success).toBe(false)
-    expect(res.body.message.phone).toBe(ERROR_MESSAGES.IS_NOT_PHONE)
+    expect(res.body.message.address).toBe(ERROR_MESSAGES.IS_NOT_CHECKSUM_ADDRESS)
   })
 
-  it('should throw 401 if phone pair is not found', async () => {
-    // With non-existing phone
-    const res = await request(app).get('/balance/cgld').send({ phone: '+56986698244' })
-    expect(res.body.status).toBe(401)
-    expect(res.body.success).toBe(false)
-    expect(res.body.message).toBe(ERROR_MESSAGES.PRIVATE_KEY_NOT_FOUND)
-  })
-
-  it('should get cGLD balance correctly', async () => {
+  it('[route/balance/cgld/3] should get cGLD balance correctly', async () => {
     // Should use an existing account with funds
-    const res = await request(app).get('/balance/cgld').send({ phone })
+    const res = await request(app).get('/balance/cgld').send({ address })
     const correctBalance = await gldBalance(address)
     const { balance, status, success } = res.body
     expect(balance).not.toBe('0')
     expect(status).toBe(200)
     expect(success).toBe(true)
-    expect(balance).toBe(correctBalance.toString())
+    // should get the balance in 'dollars', not in wei
+    expect(balance).toBe(utils.fromWei(correctBalance.toString()))
   })
 })

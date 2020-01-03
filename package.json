@@ -11,9 +11,9 @@
     "node": "10.13"
   },
   "scripts": {
-    "test": "jest --watchAll",
-    "test:coverage": "jest --watch  --collectCoverage",
-    "test:verbose": "jest route.wallet.test.js --watch --verbose",
+    "test": "jest",
+    "test:coverage": "jest  --collectCoverage",
+    "test:verbose": "jest controller.balance.test.js --watch --verbose",
     "test:verbose:debug": "DEBUG='pipoltest::test' npm run test:verbose",
     "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "debug": "DEBUG='pipol::*' npm run start",

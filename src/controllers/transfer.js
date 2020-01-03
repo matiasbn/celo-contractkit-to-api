@@ -16,9 +16,9 @@ const transferCUSD = async (request, response) => {
     const {
       address, toAddress, amount,
     } = request.body
-    const { privateKey } = await PrivateKey.findOne({ address }, { _id: 0, privateKey: 1 }).lean()
-    debugControllers('privateKey:', privateKey)
-    if (!privateKey) {
+    const privKey = await PrivateKey.findOne({ address }, { _id: 0, privateKey: 1 }).lean()
+    debugControllers('privateKey:', privKey)
+    if (!privKey) {
       response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
     } else {
       const balance = await usdBalance(address)
@@ -26,6 +26,7 @@ const transferCUSD = async (request, response) => {
         response.error({ message: ERROR_MESSAGES.INSUFFICIENT_FUNDS, balance: balance.toNumber().toString(), amount }, 401)
       } else {
         const date = Date.now()
+        const { privateKey } = privKey
         const emitHash = getSha256([address, date, WORKER_NAMES.TRANSFER_CUSD])
         debugControllers('emithHash:', emitHash)
         const parameters = {
@@ -61,9 +62,9 @@ const transferCGLD = async (request, response) => {
     const {
       address, toAddress, amount,
     } = request.body
-    const { privateKey } = await PrivateKey.findOne({ address }, { _id: 0, privateKey: 1 }).lean()
-    debugControllers('privateKey:', privateKey)
-    if (!privateKey) {
+    const privKey = await PrivateKey.findOne({ address }, { _id: 0, privateKey: 1 }).lean()
+    debugControllers('privateKey:', privKey)
+    if (!privKey) {
       response.error(ERROR_MESSAGES.WALLET_NOT_FOUND, 401)
     } else {
       const balance = await gldBalance(address)
@@ -72,6 +73,7 @@ const transferCGLD = async (request, response) => {
       } else {
         const date = Date.now()
         const emitHash = getSha256([address, date, WORKER_NAMES.TRANSFER_CGLD])
+        const { privateKey } = privKey
         debugControllers('emithHash:', emitHash)
         const parameters = {
           privateKey,

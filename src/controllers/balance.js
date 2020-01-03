@@ -7,7 +7,6 @@ const getUSDBalance = async (request, response) => {
   try {
     const { address } = request.body
     debugControllers('request body: \n', request.body)
-    debugTest('request body: \n', request.body)
     const balance = utils.fromWei((await usdBalance(address)).toString())
     debugControllers('cUSD balance:\n', balance)
     response.success({ balance })
@@ -21,7 +20,6 @@ const getUSDBalance = async (request, response) => {
 const getGLDBalance = async (request, response) => {
   try {
     debugControllers(request.body)
-    debugTest(request.body)
     const { address } = request.body
     const balance = utils.fromWei((await gldBalance(address)).toString())
     debugControllers('cGLD balance: \n', balance)
