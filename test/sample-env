@@ -1,0 +1,5 @@
+NODE_ENV=test
+MONGO_URI=mongodb://localhost:27017/
+KEY_SIZE=64
+APP_PORT=3001
+CELO_URL=https://alfajores-forno.celo-testnet.org/
