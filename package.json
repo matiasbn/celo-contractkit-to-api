@@ -7,6 +7,9 @@
   "author": "Matías Barrios",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "10.13"
+  },
   "scripts": {
     "test": "jest --watchAll",
     "test:coverage": "jest --watch  --collectCoverage",
