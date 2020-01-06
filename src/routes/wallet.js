@@ -13,28 +13,24 @@ router
   .use(trimRequest.all)
 
 router.post('/create',
-  trimRequest.all,
   validation.checkFormat,
   validation.checkBody,
   validator,
   Controller.createWallet)
 
 router.get('/fetch',
-  trimRequest.all,
   validation.checkFormat,
   validation.checkBody,
   validator,
   Controller.fetchWallet)
 
 router.post('/delete',
-  trimRequest.all,
   validation.checkFormat,
   validation.checkBody,
   validator,
   Controller.deleteWallet)
 
 router.post('/update',
-  trimRequest.all,
   validation.checkFormat,
   validation.checkBody,
   validator,
