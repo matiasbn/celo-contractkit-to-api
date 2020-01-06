@@ -3,8 +3,14 @@ import trimRequest from 'trim-request'
 import Controller from '../controllers/wallet'
 import validation from '../validators/wallet'
 import validator from '../validators/validator'
+import jwtAuth from '../middlewares/jwt-auth'
 
 const router = new Router()
+
+// Authenticated route
+router
+  .use(jwtAuth)
+  .use(trimRequest.all)
 
 router.post('/create',
   trimRequest.all,

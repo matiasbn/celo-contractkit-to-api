@@ -40,7 +40,7 @@ const jwtOptions = {
 
 passport.use(new JwtStrategy(jwtOptions, async (request, payload, done) => {
   debugAuth('jwt payload', payload)
-  const [error, user] = await A2A(User.findById(payload.uid))
+  const [error, user] = await A2A(User.findById(payload.userId))
 
   if (!error) {
     if (!user) return done(null, false)

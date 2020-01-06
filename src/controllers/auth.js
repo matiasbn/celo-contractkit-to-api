@@ -24,6 +24,7 @@ const login = (request, response) => {
               userId: user.id,
               refreshToken,
               issuedAt: Date.now(),
+              revoked: false,
             }
             debugAuth('Controller::Auth::Login::refreshToken', refreshTokenObject)
             const storedToken = await RefreshToken.findOne({ userId: user._id })
