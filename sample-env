@@ -4,3 +4,6 @@ KEY_SIZE=64
 APP_PORT=3001
 CELO_URL=https://alfajores-forno.celo-testnet.org/
 DATABASE_NAME=celopipol
+JWT_SECRET=
+JWT_EXPIRATION_TIME=
+CREATE_SECRET=
