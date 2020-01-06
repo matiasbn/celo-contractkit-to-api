@@ -72,13 +72,11 @@ describe('cUSD balance route integration testing', () => {
 })
 
 describe('cGLD balance route integration testing', () => {
-  let phone
   let address
 
   beforeEach(async () => {
     await PrivateKey.deleteMany({})
     const fundedAccount = await PrivateKey.create(funded)
-    phone = fundedAccount.phone
     address = fundedAccount.address
   })
 
