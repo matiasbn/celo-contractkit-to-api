@@ -17,6 +17,9 @@ const environmentSchema = (environment) => {
     KEY_SIZE: joiString.required(),
     CELO_URL: joiString.required(),
     APP_PORT: joiNumber.required(),
+    JWT_SECRET: joiString.required(),
+    JWT_EXPIRATION_TIME: joiNumber.required(),
+    CREATE_SECRET: joiString.required(),
     ...environment === 'main' && { DATABASE_NAME: joiString.required() },
   }
 }

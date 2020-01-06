@@ -3,6 +3,7 @@ import responder from 'express-api-responder'
 import WalletRoutes from './wallet'
 import BalanceRoutes from './balance'
 import TransferRoutes from './transfer'
+import AuthRoutes from './auth'
 
 const router = new Router()
 
@@ -20,8 +21,9 @@ router.get('/', (request, response) => {
 })
 
 router
-  .use('/wallet', WalletRoutes)
+  .use('/auth', AuthRoutes)
   .use('/balance', BalanceRoutes)
   .use('/transfer', TransferRoutes)
+  .use('/wallet', WalletRoutes)
 
 export default router
