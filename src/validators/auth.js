@@ -13,8 +13,13 @@ const checkCreate = [
   body('secret').exists().withMessage(ERROR_MESSAGES.SECRET_IS_EMPTY).bail(),
 ]
 
+const checkRefresh = [
+  body('refreshToken').exists().withMessage(ERROR_MESSAGES.REFRESH_TOKEN_IS_EMPTY).bail(),
+]
+
 
 export default {
   checkBody,
   checkCreate,
+  checkRefresh,
 }

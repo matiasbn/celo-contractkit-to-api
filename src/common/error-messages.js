@@ -11,6 +11,7 @@ const ERROR_MESSAGES = {
   PHONE_ALREADY_REGISTERED: 'phone already registered with a private key',
   PHONE_IS_EMPTY: 'phone cannot be empty',
   PRIVATE_KEY_NOT_FOUND: 'private key not found for given phone',
+  REFRESH_TOKEN_IS_EMPTY: 'refresh token cannot be empty',
   SECRET_IS_EMPTY: 'secret cannot be empty',
   TO_ADDRESS_IS_EMPTY: 'toAddress cannot be empty',
   USER_ALREADY_EXISTS: 'user already registered',

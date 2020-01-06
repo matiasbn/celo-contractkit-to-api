@@ -10,6 +10,7 @@ import ERROR_MESSAGES from '../common/error-messages'
 import Logger from '../config/logger'
 
 const { JWT_SECRET, JWT_EXPIRATION_TIME, KEY_SIZE } = process.env
+const JWT_OPTIONS = { expiresIn: `${JWT_EXPIRATION_TIME}s` }
 
 const login = (request, response) => {
   passport.authenticate('local', { session: false }, (errorAuth, user, info) => {
@@ -18,8 +19,8 @@ const login = (request, response) => {
       request.logIn(user, { session: false }, async (errorLogin) => {
         if (!errorLogin) {
           try {
-            const accessToken = JWT.sign({ userId: user._id }, JWT_SECRET, { expiresIn: `${JWT_EXPIRATION_TIME}s` })
-            const refreshToken = utils.randomHex(Number(KEY_SIZE))
+            const accessToken = JWT.sign({ userId: user._id }, JWT_SECRET, JWT_OPTIONS)
+            const refreshToken = utils.randomHex(Number(KEY_SIZE)).replace('0x', '')
             const refreshTokenObject = {
               userId: user.id,
               refreshToken,
@@ -66,8 +67,39 @@ const create = async (request, response) => {
     response.error(error, 500)
   }
 }
+const refresh = async (request, response) => {
+  try {
+    const refreshToken = await RefreshToken.findOne({ refreshToken: request.body.refreshToken })
+
+    if (!refreshToken) return response.error('Refresh token invalid', 401)
+    if (refreshToken.revoked) return response.error('Refresh token has been revoked', 401)
+
+    const accessTokenValue = JWT.sign({ uid: refreshToken.userId }, JWT_SECRET, JWT_OPTIONS)
+    const refreshTokenValue = utils.randomHex(Number(KEY_SIZE)).replace('0x', '')
+
+    const newRefreshToken = {
+      userId: refreshToken.userId,
+      refreshToken: refreshTokenValue,
+      revoked: false,
+      iat: Date.now(),
+    }
+
+    await RefreshToken.updateOne({ userId: refreshToken.userId }, newRefreshToken)
+
+    const authResponse = {
+      access_token: accessTokenValue,
+      refresh_token: refreshTokenValue,
+      token_type: 'Bearer',
+    }
+
+    return response.success({ ...authResponse })
+  } catch (error) {
+    return response.error(error)
+  }
+}
 
 export default {
   login,
   create,
+  refresh,
 }

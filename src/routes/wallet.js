@@ -2,7 +2,7 @@ import { Router } from 'express'
 import trimRequest from 'trim-request'
 import Controller from '../controllers/wallet'
 import validation from '../validators/wallet'
-import validator from '../validators/validator'
+import validator from '../middlewares/validator'
 import jwtAuth from '../middlewares/jwt-auth'
 
 const router = new Router()
