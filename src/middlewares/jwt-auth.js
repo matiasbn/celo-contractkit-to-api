@@ -1,15 +1,24 @@
 /* eslint-disable consistent-return */
 import passport from 'passport'
+import ERROR_MESSAGES from '../common/error-messages'
 
 const jwtAuth = (request, response, next) => {
-  try {
-    passport.authenticate('jwt', { session: false }, (error, user, info) => {
+  passport.authenticate('jwt', { session: false }, (error, user, info) => {
+    try {
       if (error) return next(error)
       // Authentication error
       if (!user) {
-        const errorMessage = info.name === 'TokenExpiredError' ? 'Expired access token' : (info.message || 'Unauthorized')
-
-        return response.error(errorMessage, 401)
+        if (info) {
+          if (info.name === 'TokenExpiredError') {
+            const resp = {
+              errorMessage: ERROR_MESSAGES.ACCESS_TOKEN_EXPIRED,
+              ...info.expiredAt && { expiredAt: info.expiredAt },
+            }
+            return response.error(resp, 401)
+          }
+          return response.error(info.message, 401)
+        }
+        return response.error(ERROR_MESSAGES.USER_NOT_FOUND, 401)
       }
 
       // Success
@@ -18,10 +27,10 @@ const jwtAuth = (request, response, next) => {
 
         return next()
       })
-    })(request, response, next)
-  } catch (error) {
-    return response.error(error)
-  }
+    } catch (err) {
+      return response.error(err)
+    }
+  })(request, response, next)
 }
 
 export default jwtAuth

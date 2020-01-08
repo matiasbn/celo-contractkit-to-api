@@ -35,7 +35,7 @@ const login = (request, response) => {
               await RefreshToken.findOneAndUpdate({ userId: user._id }, refreshTokenObject, { new: true })
             }
             const authResponse = {
-              accessToken, refreshToken, token_type: 'Bearer',
+              accessToken, refreshToken, tokenType: 'Bearer',
             }
             return response.success(authResponse)
           } catch (error) {
@@ -43,10 +43,10 @@ const login = (request, response) => {
             return response.error(error)
           }
         }
-        return response.error(errorLogin)
+        return response.error(errorLogin, 401)
       })
     } else {
-      return response.error(info.message, 400)
+      return response.error(info.message, 401)
     }
   })(request, response)
 }
@@ -57,12 +57,12 @@ const create = async (request, response) => {
     if (secret === process.env.CREATE_SECRET) {
       const storedUser = await User.findOne({ name })
       if (storedUser) {
-        return response.error(ERROR_MESSAGES.USER_ALREADY_EXISTS)
+        return response.error(ERROR_MESSAGES.USER_ALREADY_EXISTS, 401)
       }
       const createdUser = await User.create({ name, password })
       return response.success({ id: createdUser._id, name: createdUser.name })
     }
-    return response.error(ERROR_MESSAGES.INCORRECT_SECRET)
+    return response.error(ERROR_MESSAGES.INCORRECT_SECRET, 401)
   } catch (error) {
     response.error(error, 500)
   }
@@ -71,8 +71,8 @@ const refresh = async (request, response) => {
   try {
     const refreshToken = await RefreshToken.findOne({ refreshToken: request.body.refreshToken })
 
-    if (!refreshToken) return response.error('Refresh token invalid', 401)
-    if (refreshToken.revoked) return response.error('Refresh token has been revoked', 401)
+    if (!refreshToken) return response.error(ERROR_MESSAGES.REFRESH_TOKEN_IS_INVALID, 401)
+    if (refreshToken.revoked) return response.error(ERROR_MESSAGES.REFRESH_TOKEN_IS_REVOKED, 401)
 
     const accessTokenValue = JWT.sign({ uid: refreshToken.userId }, JWT_SECRET, JWT_OPTIONS)
     const refreshTokenValue = utils.randomHex(Number(KEY_SIZE)).replace('0x', '')
@@ -81,20 +81,34 @@ const refresh = async (request, response) => {
       userId: refreshToken.userId,
       refreshToken: refreshTokenValue,
       revoked: false,
-      iat: Date.now(),
+      issuedAt: Date.now(),
     }
 
     await RefreshToken.updateOne({ userId: refreshToken.userId }, newRefreshToken)
 
     const authResponse = {
-      access_token: accessTokenValue,
-      refresh_token: refreshTokenValue,
-      token_type: 'Bearer',
+      accessToken: accessTokenValue,
+      refreshToken: refreshTokenValue,
+      tokenType: 'Bearer',
     }
 
-    return response.success({ ...authResponse })
+    return response.success(authResponse)
   } catch (error) {
     return response.error(error)
+  }
+}
+
+const del = async (request, response) => {
+  try {
+    const { name } = request.user
+    const storedUser = await User.findOne({ name })
+    if (!storedUser) {
+      return response.error(ERROR_MESSAGES.USER_NOT_FOUND, 401)
+    }
+    const deletedUser = await User.findOneAndDelete({ name })
+    return response.success({ id: deletedUser._id, name: deletedUser.name })
+  } catch (error) {
+    response.error(error, 500)
   }
 }
 
@@ -102,4 +116,5 @@ export default {
   login,
   create,
   refresh,
+  del,
 }

@@ -15,6 +15,11 @@ const TEST_CONFIG = [
     drop: true,
   },
   {
+    databaseName: 'test-route-auth',
+    appPort: 3010,
+    drop: true,
+  },
+  {
     databaseName: 'test-controller-balance',
     appPort: null,
     drop: true,

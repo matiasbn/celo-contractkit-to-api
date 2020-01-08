@@ -5,6 +5,7 @@ import validation from '../validators/auth'
 import validator from '../middlewares/validator'
 
 import '../config/auth-strategies'
+import jwtAuth from '../middlewares/jwt-auth'
 
 const router = new Router()
 
@@ -25,5 +26,9 @@ router.post('/refresh',
   validation.checkRefresh,
   validator,
   Controller.refresh)
+
+router.post('/delete',
+  jwtAuth,
+  Controller.del)
 
 export default router

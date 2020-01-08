@@ -3,7 +3,7 @@ import A2A from 'a2a'
 import passport from 'passport'
 import LocalStrategy from 'passport-local'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
-
+import ERROR_MESSAGES from '../common/error-messages'
 import User from '../models/user'
 import { debugAuth } from './debug'
 
@@ -18,12 +18,12 @@ passport.use(new LocalStrategy(localOptions, async (request, name, password, don
   const [error, user] = await A2A(User.findOne({ name }))
 
   if (!error) {
-    if (!user) return done(null, false, { message: 'Incorrect email or password' })
+    if (!user) return done(null, false, { message: ERROR_MESSAGES.INCORRECT_NAME_OR_PASSWORD })
 
     const [errorVerification, isMatch] = await A2A(user.verifyPassword(password))
 
     if (errorVerification || !isMatch) {
-      return done(null, false, new Error('Incorrect email or password'))
+      return done(null, false, new Error(ERROR_MESSAGES.INCORRECT_NAME_OR_PASSWORD))
     }
 
     return done(null, user)
