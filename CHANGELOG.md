@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.2.4...v0.3.0) (2020-01-09)
+
+
+### Features
+
+* jwt authentication integrated ([f2b7cbe](https://bitbucket.org/cryptopipol/pipol-demo/commit/f2b7cbe7538e04331da58625448029223cfc6918))
+* login and create user ([27f3d3e](https://bitbucket.org/cryptopipol/pipol-demo/commit/27f3d3e28921cd88aabe28db7e80558ed391f821))
+* refresh token ([fd09b9f](https://bitbucket.org/cryptopipol/pipol-demo/commit/fd09b9f727c4c109a4a8cf2cc8f2044e02cd7f23))
+
+
+### Bug Fixes
+
+* .vscode removed ([bc01cce](https://bitbucket.org/cryptopipol/pipol-demo/commit/bc01cce1147323376167ae35b71a4079f135ac14))
+* authenticating routes with JWT ([c5c1608](https://bitbucket.org/cryptopipol/pipol-demo/commit/c5c160846ca0cabe4dcd534405c0da7c24703bbc))
+* phone reference deleted ([8c5d44a](https://bitbucket.org/cryptopipol/pipol-demo/commit/8c5d44a56c3fadb56d8e77a5ab13a7e8afd471b8))
+* repeated middleware ([00d67af](https://bitbucket.org/cryptopipol/pipol-demo/commit/00d67af96ff0548726b9ba25ca52d6c4196f5b13))
+
 ### [0.2.4](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.2.3...v0.2.4) (2020-01-03)
 
 
