@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.3.0...v1.0.0) (2020-01-10)
+
 ## [0.3.0](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.2.4...v0.3.0) (2020-01-09)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "pipol-demo",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Pipol demo for Celo Blockchain",
   "main": "index.js",
   "repository": "git@bitbucket.org:cryptopipol/pipol-demo.git",
@@ -70,6 +70,7 @@
     "@babel/preset-env": "^7.4.5",
     "@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^8.0.0",
+    "apidoc": "^0.19.1",
     "babel-eslint": "^10.0.3",
     "babel-plugin-add-module-exports": "^1.0.2",
     "babel-plugin-root-import": "^5.1.0",
