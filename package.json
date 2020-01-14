@@ -11,6 +11,7 @@
     "node": "10.13"
   },
   "scripts": {
+    "apidoc": "apidoc -i src/routes -o api-documentation",
     "test": "jest",
     "test:coverage": "jest --collectCoverage",
     "test:verbose": "jest --watch --verbose",

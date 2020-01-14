@@ -1,7 +1,10 @@
 {
     "name": "Celo demo for Pipolpay",
     "version": "1.0.0",
-    "description": "documentation for Celo Blockchain demo API Rest",
+    "description": "Documentation for Celo Blockchain demo API Rest",
     "title": "Celo Blochain API Rest demo",
-    "url": "https://localhost:3001/"
+    "url": "http://localhost:3001",
+    "template": {
+        "forceLanguage": "en"
+    }
 }

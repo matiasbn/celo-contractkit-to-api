@@ -3,12 +3,22 @@
     "airbnb-base",
     // "plugin:unicorn/recommended"
   ],
-  "plugins": ["promise","import"],
+  "plugins": [
+    "promise",
+    "import"
+  ],
   "rules": {
     "no-param-reassign": 0,
-    "semi": [2, "never"],
+    "semi": [
+      2,
+      "never"
+    ],
     "no-underscore-dangle": 0,
-    "no-async-promise-executor": 0
+    "no-async-promise-executor": 0,
+    "spaced-comment": [
+      "error",
+      "always"
+    ]
   },
   "env": {
     "node": true,
@@ -19,9 +29,9 @@
     "ecmaVersion": 8,
     "sourceType": "module"
   },
-    "settings": {
-      "import/resolver": {
-        "babel-plugin-root-import": {}
-      }
+  "settings": {
+    "import/resolver": {
+      "babel-plugin-root-import": {}
     }
+  }
 }
