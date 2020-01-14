@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://bitbucket.org/cryptopipol/pipol-demo/compare/v1.0.0...v1.1.0) (2020-01-14)
+
+
+### Features
+
+* apidoc files created ([8ce1e40](https://bitbucket.org/cryptopipol/pipol-demo/commit/8ce1e40937275eed8669850d88719237714e1167))
+* apidoc initialized ([370dd74](https://bitbucket.org/cryptopipol/pipol-demo/commit/370dd742b18e5b27b5b134782baaedc86be3f0a5))
+* apidoc started ([fc8b3c0](https://bitbucket.org/cryptopipol/pipol-demo/commit/fc8b3c02a3d53b6cfa9459945516c3ed40d28cb0))
+* routes documented ([c45dbbc](https://bitbucket.org/cryptopipol/pipol-demo/commit/c45dbbc8734deaa5ba09625b60e42b40a31e9ca6))
+
 ## [1.0.0](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.3.0...v1.0.0) (2020-01-10)
 
 ## [0.3.0](https://bitbucket.org/cryptopipol/pipol-demo/compare/v0.2.4...v0.3.0) (2020-01-09)

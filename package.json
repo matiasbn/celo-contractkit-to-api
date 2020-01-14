@@ -1,6 +1,6 @@
 {
   "name": "pipol-demo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Pipol demo for Celo Blockchain",
   "main": "index.js",
   "repository": "git@bitbucket.org:cryptopipol/pipol-demo.git",
