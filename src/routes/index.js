@@ -17,7 +17,7 @@ router.get('/', (request, response) => {
     uptime: process.uptime(),
   }
 
-  return response.success({ data: parsedResponse })
+  return response.success({ message: 'Celo-Pipol API is alive!', data: parsedResponse })
 })
 
 router

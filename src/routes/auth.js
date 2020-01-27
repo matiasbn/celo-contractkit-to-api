@@ -70,7 +70,7 @@ router.post('/login',
  * @apiDescription Create an authorized user account using a secret.
  * @apiParam {String} body.name user name.
  * @apiParam {String} body.password user password.
- * @apiParam {String} body.secret secret to create an authorized user.
+ * @apiParam {String} body.secret shared secret to create an authorized user.
  * @apiParamExample {json} Request-Example:
  *    {
  *       "name":"Mt2fge4xYCYPic6j2hYRU4WLFFkMFCpRczDbfvBQHCyt3c8PPGdtUFoTkzAne4vK",
