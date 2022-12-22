@@ -45,7 +45,7 @@
     "express-validator": "^6.3.0",
     "helmet": "^3.21.2",
     "is-e164-phone-number": "^1.0.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "method-override": "^3.0.0",
     "mitt": "^1.2.0",
     "mongoose": "^5.7.13",
